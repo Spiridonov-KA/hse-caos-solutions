@@ -9,11 +9,13 @@ struct AllocatorState {
     static constexpr size_t kPageSize = 1 << 12;
 
     void* Allocate16() {
+        return nullptr; // TODO: remove before flight.
         // TODO: your code here.
         throw 'TODO';
     }
 
     void Deallocate(void* ptr) {
+        (void)ptr; // TODO: remove before flight.
         // TODO: your code here.
     }
 

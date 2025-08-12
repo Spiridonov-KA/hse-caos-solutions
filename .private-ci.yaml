@@ -64,6 +64,7 @@ push-public:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
+    - when: never
   script:
     - git config --global user.name "Oleg Shatov"
     - git config --global user.email "oleq.shatov@yandex.ru"
@@ -83,3 +84,17 @@ push-public:
         - target/
         - .cargo-home/
         - Cargo.lock
+
+build-container:
+  stage: deploy
+  needs: ['push-public']
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - when: never
+  script:
+    - docker build . -t domwst/caos-runner
+    - docker push
+    - docker image prune -f --filter "until=24h"
+    - docker system prune -f
+
