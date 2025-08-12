@@ -59,18 +59,21 @@ check-rust-infra:
         - Cargo.lock
 
 push-public:
+  extends: .base
   stage: deploy
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
-  image: rust:1.88
   script:
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git ../caos-public
-    - cargo xtask compose --in-path . --out-path ../caos-public --skip .git --stat
     - git config --global user.name "Oleg Shatov"
     - git config --global user.email "oleq.shatov@yandex.ru"
+    - caos_dir="$(mktemp -d)"
+    - trap "rm -rf $caos_dir" EXIT
+    - echo "Using $caos_dir for public repo"
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git "$caos_dir"
+    - cargo xtask compose --in-path . --out-path "$caos_dir" --skip .git --stat
     - |
-      cd ../caos-public &&
+      cd $caos_dir &&
       git add --all &&
       git commit --allow-empty -m "Public files export" &&
       git push https://caos:${PUSH_TO_PUBLIC_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git HEAD:main

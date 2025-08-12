@@ -336,3 +336,5 @@ build_*
 
 # Nejudge runner artefacts
 tasks/**/run/
+
+.cargo-home

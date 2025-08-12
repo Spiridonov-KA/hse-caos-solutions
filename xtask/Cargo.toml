@@ -17,3 +17,5 @@ anstream = { version = "0.6.19" }
 annotate-snippets = { version = "0.11" }
 walkdir = { version = "2.5" }
 regex = { version = "1.10" }
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

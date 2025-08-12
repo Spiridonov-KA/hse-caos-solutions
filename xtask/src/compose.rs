@@ -10,6 +10,7 @@ use std::{
     io::{self, BufRead},
     path::{Path, PathBuf},
 };
+use tracing::info;
 
 #[derive(Debug, Parser)]
 pub struct ComposeArgs {
@@ -381,10 +382,10 @@ impl<'a> Compose<'a> {
 
         if self.args.stat {
             for (k, v) in self.removed_by_task.iter().sorted_by_key(|x| x.0) {
-                println!("{v}\t{k}");
+                info!("{v}\t{k}");
             }
 
-            println!("{}\ttotal", self.removed_lines);
+            info!("{}\ttotal", self.removed_lines);
         }
 
         Ok(())
