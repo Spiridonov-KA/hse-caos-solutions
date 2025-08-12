@@ -11,7 +11,6 @@ struct AllocatorState {
     void* Allocate16() {
         return nullptr; // TODO: remove before flight.
         // TODO: your code here.
-        throw 'TODO';
     }
 
     void Deallocate(void* ptr) {
