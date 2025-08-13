@@ -30,10 +30,12 @@ class List {
     }
 
     void PushBack(int value) {
+        (void)value; // TODO: remove before flight.
         // TODO: your code here.
     }
 
     void PushFront(int value) {
+        (void)value; // TODO: remove before flight.
         // TODO: your code here.
     }
 
@@ -47,20 +49,18 @@ class List {
 
     int& Back() {
         // TODO: your code here.
-        throw 'TODO';
-    }
+        throw "TODO";\n    }
 
     int& Front() {
         // TODO: your code here.
-        throw 'TODO';
-    }
+        throw "TODO";\n    }
 
     bool IsEmpty() const {
         // TODO: your code here.
-        throw 'TODO';
-    }
+        throw "TODO";\n    }
 
     void Swap(List& other) {
+        (void)other; // TODO: remove before flight.
         // TODO: your code here.
     }
 
@@ -70,11 +70,13 @@ class List {
     // l1.Splice({4, 5, 6});
     // l1 == {1, 2, 3, 4, 5, 6};
     void Splice(List& other) {
+        (void)other; // TODO: remove before flight.
         // TODO: your code here.
     }
 
     template <class F>
     void ForEachElement(F&& f) const {
+        (void)f; // TODO: remove before flight.
         // TODO: your code here.
     }
 

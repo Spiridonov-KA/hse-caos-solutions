@@ -214,7 +214,7 @@ fn process_source(src: String) -> Result<ProcessedSource> {
             } else {
                 insert_line("// TODO: your code here.\n");
                 if unimpl {
-                    insert_line("throw 'TODO';\n");
+                    insert_line(r#"throw "TODO";\n"#);
                 }
             }
 
