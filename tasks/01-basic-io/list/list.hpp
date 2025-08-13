@@ -49,15 +49,18 @@ class List {
 
     int& Back() {
         // TODO: your code here.
-        throw "TODO";\n    }
+        throw "TODO";
+    }
 
     int& Front() {
         // TODO: your code here.
-        throw "TODO";\n    }
+        throw "TODO";
+    }
 
     bool IsEmpty() const {
         // TODO: your code here.
-        throw "TODO";\n    }
+        throw "TODO";
+    }
 
     void Swap(List& other) {
         (void)other; // TODO: remove before flight.
