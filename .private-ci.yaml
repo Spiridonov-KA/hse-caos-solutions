@@ -20,8 +20,9 @@ stages:
   timeout: 10m
   tags: ["kek-today"]
   variables:
-    CARGO_HOME: "$CI_PROJECT_DIR/.cargo-home"
-    CARGO_TARGET_DIR: "$CI_PROJECT_DIR/target"
+    CACHE_DIR: /cache_cicd/$CI_PROJECT_PATH
+    CARGO_HOME: $CACHE_DIR/.cargo-home
+    CARGO_TARGET_DIR: "$CACHE_DIR/target"
 
 test-solutions-clang:
   extends: .base
@@ -30,11 +31,6 @@ test-solutions-clang:
     - apt-get update && apt-get install -y cmake clang-19
     - CXX=$(which clang++-19) CC=$(which clang-19) ./common/tools/test_all_tasks.sh
   cache:
-    - key: rust-build
-      paths:
-        - target/
-        - .cargo-home/
-        - Cargo.lock
     - key: clang-build
       paths:
         - build_*/
@@ -47,11 +43,6 @@ test-solutions-gcc:
     - apt-get update && apt-get install -y cmake
     - CXX=$(which g++) CC=$(which gcc) ./common/tools/test_all_tasks.sh
   cache:
-    - key: rust-build
-      paths:
-        - target/
-        - .cargo-home/
-        - Cargo.lock
     - key: gcc-build
       paths:
         - build_*/
@@ -64,12 +55,23 @@ check-rust-infra:
     - rustup component add clippy
     - cargo check
     - cargo clippy
-  cache:
-    - key: rust-build
-      paths:
-        - target/
-        - .cargo-home/
-        - Cargo.lock
+
+test-public-repo-build:
+  stage: test
+  extends: .base
+  script:
+    - apt-get update && apt-get install -y cmake
+    - public_dir="$(mktemp -d)"
+    - trap "rm -rf $public_dir" EXIT
+    - echo "Using $public_dir for public repo"
+    - git clone https://gitlab.com/oleg-shatov/hse-caos-public.git "$public_dir"
+    - cargo xtask compose --in-path . --out-path "$public_dir" --skip .git --stat
+    - |
+      (cd $public_dir;
+      ./common/tools/build_all_tasks.sh &&
+      echo "Public diff:" &&
+      git diff --stat &&
+      git diff)
 
 push-public:
   extends: .base
@@ -79,7 +81,6 @@ push-public:
   #     when: manual
   #   - when: never
   script:
-    - apt-get update && apt-get install -y cmake
     - git config --global user.name "Oleg Shatov"
     - git config --global user.email "oleq.shatov@yandex.ru"
     - public_dir="$(mktemp -d)"
@@ -87,18 +88,11 @@ push-public:
     - echo "Using $public_dir for public repo"
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git "$public_dir"
     - cargo xtask compose --in-path . --out-path "$public_dir" --skip .git --skip target --skip .cargo-home --stat
-    - (cd $public_dir; ./common/tools/build_all_tasks.sh)
     - |
       (cd $public_dir &&
       git add --all &&
       git commit --allow-empty -m "Public files export" &&
       git push https://caos:${PUSH_TO_PUBLIC_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git HEAD:main)
-  cache:
-    - key: rust-build
-      paths:
-        - target/
-        - .cargo-home/
-        - Cargo.lock
 
 build-container:
   stage: deploy
