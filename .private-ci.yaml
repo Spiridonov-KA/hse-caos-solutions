@@ -105,8 +105,7 @@ build-container:
   image: docker:dind
   needs: ['push-public']
   script:
+    - docker login -u domwst -p ${DOCKER_PAT}
     - docker build . -t domwst/caos-runner
-    - docker push
-    - docker image prune -f --filter "until=24h"
-    - docker system prune -f
+    - docker push domwst/caos-runner
 
