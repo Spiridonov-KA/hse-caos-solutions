@@ -1,9 +1,3 @@
-# DinD service is required for Testcontainers
-services:
-  - name: docker:dind
-    # explicitly disable tls to avoid docker startup interruption
-    command: ["--tls=false"]
-
 variables:
   # Instruct Docker not to start over TLS.
   DOCKER_TLS_CERTDIR: ""
@@ -74,6 +68,10 @@ test-public-repo-build:
       git status &&
       git diff --stat &&
       git diff --color)
+  cache:
+    - key: public-repo-build
+      paths:
+        - build_*/
 
 push-public:
   extends: .base
