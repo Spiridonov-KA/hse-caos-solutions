@@ -1,6 +1,6 @@
 stages:
   - test
-  - deploy
+  - publish
 
 .base:
   image: rust:1.88
@@ -62,13 +62,16 @@ test-public-repo-build:
       git diff --stat &&
       git diff --color)
 
-push-public:
+.publish-base:
   extends: .base
-  stage: deploy
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  #     when: manual
-  #   - when: never
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_TITLE =~ /^pub: /'
+      when: on_success
+    - when: never
+
+push-public:
+  extends: .publish-base
   script:
     - git config --global user.name "Oleg Shatov"
     - git config --global user.email "oleq.shatov@yandex.ru"
@@ -84,9 +87,9 @@ push-public:
       git push https://caos:${PUSH_TO_PUBLIC_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git HEAD:main)
 
 build-container:
-  stage: deploy
+  extends: .publish-base
   image: docker:dind
-  needs: ['push-public']
+  needs: ["push-public"]
   script:
     - docker login -u domwst -p ${DOCKER_PAT}
     - docker build . -t domwst/caos-runner
