@@ -1,9 +1,0 @@
-tests:
-  - type: nejudge
-    checker: bin:checker_addrinfo
-    solution: solution_addrinfo
-    profiles:
-      - release
-    retries_count: 3
-editable:
-  - solution.cpp
