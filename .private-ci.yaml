@@ -1,21 +1,43 @@
 stages:
+  - prepare
   - test
   - publish
 
 .base:
-  image: rust:1.88
-  timeout: 10m
+  image: domwst/caos-private-ci
+  timeout: 20m
   tags: ["kek-today"]
   variables:
     CACHE_DIR: /cache_cicd/$CI_PROJECT_PATH
     CARGO_HOME: $CACHE_DIR/.cargo-home
     CARGO_TARGET_DIR: "$CACHE_DIR/target"
 
+.dind-base:
+  extends: .base
+  image: docker:dind
+  before_script:
+    - docker login -u domwst -p ${DOCKER_PAT}
+  services:
+    - name: docker:dind
+      command: ["--tls=false"]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+
+build-ci-container:
+  extends: .dind-base
+  stage: prepare
+  only:
+    changes:
+      - .private-ci/**
+  script:
+    - docker build .private-ci -t domwst/caos-private-ci
+    - docker push domwst/caos-private-ci
+
 test-solutions-clang:
   extends: .base
   stage: test
   script:
-    - apt-get update && apt-get install -y cmake clang-19
     - CXX=$(which clang++-19) CC=$(which clang-19) ./common/tools/test_all_tasks.sh
   cache:
     - key: clang-build
@@ -27,7 +49,6 @@ test-solutions-gcc:
   extends: .base
   stage: test
   script:
-    - apt-get update && apt-get install -y cmake
     - CXX=$(which g++) CC=$(which gcc) ./common/tools/test_all_tasks.sh
   cache:
     - key: gcc-build
@@ -39,7 +60,6 @@ check-rust-infra:
   extends: .base
   stage: test
   script:
-    - rustup component add clippy
     - cargo check
     - cargo clippy
 
@@ -47,7 +67,6 @@ test-public-repo-build:
   stage: test
   extends: .base
   script:
-    - apt-get update && apt-get install -y cmake
     - public_dir="$(mktemp -d)"
     - trap "rm -rf $public_dir" EXIT
     - echo "Using $public_dir for public repo"
@@ -55,7 +74,7 @@ test-public-repo-build:
     - cargo xtask compose --in-path . --out-path "$public_dir" --skip .git --stat
     - |
       (cd $public_dir;
-      ./common/tools/build_all_tasks.sh &&
+      CXX=$(which clang++-19) CC=$(which clang-19) ./common/tools/build_all_tasks.sh &&
       echo "Public diff:" &&
       git add -N . &&
       git status &&
@@ -83,21 +102,15 @@ push-public:
     - |
       (cd $public_dir &&
       git add . &&
-      git commit --allow-empty -m "Public files export" &&
+      git commit --allow-empty -m "${CI_COMMIT_TITLE#pub: }" &&
       git push https://caos:${PUSH_TO_PUBLIC_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git HEAD:main)
 
 build-container:
-  extends: .publish-base
-  image: docker:dind
+  extends:
+    - .publish-base
+    - .dind-base
   needs: ["push-public"]
   script:
-    - docker login -u domwst -p ${DOCKER_PAT}
     - docker build . -t domwst/caos-runner
     - docker push domwst/caos-runner
-  services:
-    - name: docker:dind
-      command: ["--tls=false"]
-  variables:
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_DRIVER: overlay2
 

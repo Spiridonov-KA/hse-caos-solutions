@@ -5,7 +5,7 @@ tests:
       - asan
     bin: test_list
   - type: forbidden-patterns
-    substring:
+    token:
       - <list>
       - <queue>
       - <deque>

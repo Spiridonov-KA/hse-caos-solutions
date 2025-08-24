@@ -43,7 +43,7 @@ enum {
     fprintf(stderr, "\n");                                                     \
     exit(1)
 
-#define checker_drain() ;
+#define checker_drain()
 
 #define checker_kill kill
 
@@ -96,8 +96,8 @@ int checker_read_out_unsigned_long_long(const char* name, int eof_error_flag,
 void checker_in_eof(void) {
     int c;
 
-    while ((c = getc(f_in)) != EOF && isspace(c))
-        ;
+    while ((c = getc(f_in)) != EOF && isspace(c)) {
+    }
     if (c != EOF) {
         if (c < ' ') {
             fatal_CF(_("%s: invalid control character with code %d"), "input",

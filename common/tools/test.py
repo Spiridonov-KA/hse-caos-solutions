@@ -677,6 +677,7 @@ for cnt in range(args.retests_count):
         for i in range(args.retries_count):
             try:
                 res = run()
+                break
             except RuntimeError as e:
                 will_retry = i + 1 < args.retries_count
                 will_retry_str = " not" * (not will_retry)

@@ -12,6 +12,6 @@ add_library(ut_main ut_main.cpp)
 target_link_libraries(ut_main Catch2::Catch2WithMain)
 
 function(add_catch_executable name)
-    add_executable(${name} ${ARGN})
+    add_caos_executable(${name} ${ARGN})
     target_link_libraries(${name} PRIVATE ut_main)
 endfunction()

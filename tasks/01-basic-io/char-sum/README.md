@@ -4,9 +4,8 @@
 
 Не забывайте добавлять `\n` в конце вывода.
 
-## Примечание
-
-Используйте системные вызовы [`read`](https://www.man7.org/linux/man-pages/man2/read.2.html) и [`write`](https://www.man7.org/linux/man-pages/man2/write.2.html) для работы со стандартными потоками ввода/вывода.
+> [!note]
+> Используйте системные вызовы [`read`](https://www.man7.org/linux/man-pages/man2/read.2.html) и [`write`](https://www.man7.org/linux/man-pages/man2/write.2.html) для работы со стандартными потоками ввода/вывода.
 
 ## Пример
 

@@ -1,1 +1,1 @@
-add_executable(solution_char_sum solution.cpp)
+add_caos_executable(solution_char_sum solution.cpp)

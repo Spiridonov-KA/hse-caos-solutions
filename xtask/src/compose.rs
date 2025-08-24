@@ -4,13 +4,16 @@ use anyhow::{Context, Result, bail};
 use clap::Parser;
 use globset::{Glob, GlobSet, GlobSetBuilder};
 use itertools::Itertools;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     fs,
     io::{self, BufRead},
     path::{Path, PathBuf},
 };
-use tracing::info;
+use tracing::{debug, info};
+
+use crate::util::PathExt;
 
 #[derive(Debug, Parser)]
 pub struct ComposeArgs {
@@ -234,18 +237,37 @@ fn process_source(src: String) -> Result<ProcessedSource> {
     })
 }
 
-struct Compose<'a> {
-    args: &'a ComposeArgs,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct ExportList {
+    export: Vec<PathBuf>,
+}
+
+impl ExportList {
+    fn get_checker(&self) -> Result<impl for<'a> Fn(&'a Path) -> bool + use<>> {
+        let mut builder = GlobSetBuilder::new();
+        for path in &self.export {
+            builder.add(Glob::new(path.to_str_logged()?)?);
+        }
+
+        let set = builder.build()?;
+
+        let checker: impl for<'a> Fn(&'a Path) -> bool = move |p| set.is_match(p);
+        Ok(Box::new(checker))
+    }
+}
+
+struct Compose {
+    args: ComposeArgs,
 
     removed_lines: usize,
     removed_by_task: HashMap<String, usize>,
     glob_set: GlobSet,
 }
 
-impl<'a> Compose<'a> {
+impl Compose {
     const PROCESS_EXTENSIONS: [&'static str; 6] = [".h", ".hpp", ".c", ".cpp", ".s", ".S"];
 
-    fn new(args: &'a ComposeArgs) -> Result<Self> {
+    fn new(args: ComposeArgs) -> Result<Self> {
         let mut glob_builder = GlobSetBuilder::new();
 
         let mut add_glob = |path: &str| -> Result<()> {
@@ -259,8 +281,7 @@ impl<'a> Compose<'a> {
         };
 
         if args.gitignore {
-            let mut gitignore_path = args.in_path.clone();
-            gitignore_path.push(".gitignore");
+            let gitignore_path = PathBuf::from_iter([&args.in_path, Path::new(".gitignore")]);
             let f = fs::OpenOptions::new()
                 .read(true)
                 .open(&gitignore_path)
@@ -330,6 +351,24 @@ impl<'a> Compose<'a> {
         Ok(())
     }
 
+    #[allow(clippy::type_complexity)]
+    fn get_export_checker(dir: &Path) -> Result<Box<dyn Fn(&Path) -> bool>> {
+        let export_config = Path::new(".export.yaml");
+        let path = PathBuf::from_iter([dir, export_config]);
+
+        let f = fs::OpenOptions::new().read(true).open(&path);
+        let f = match f {
+            Ok(f) => f,
+            Err(e) => match e.kind() {
+                io::ErrorKind::NotFound => return Ok(Box::new(|_| true)),
+                _ => Err(e).context(format!("failed to open {}", path.display()))?,
+            },
+        };
+
+        let config: ExportList = serde_yml::from_reader(f)?;
+        Ok(Box::new(config.get_checker()?))
+    }
+
     fn process_dir(&mut self, in_path: &Path, out_path: Option<&Path>) -> Result<()> {
         let dir = fs::read_dir(in_path)
             .with_context(|| format!("failed to read dir {}", in_path.display()))?;
@@ -339,10 +378,20 @@ impl<'a> Compose<'a> {
                 .with_context(|| format!("failed to create dir {}", out_dir.display()))?;
         }
 
+        let checker = Self::get_export_checker(in_path)?;
+
         for mb_entry in dir {
             let name = mb_entry
                 .with_context(|| format!("failed to read entry in dir {}", in_path.display()))?
                 .file_name();
+
+            if !checker(Path::new(&name)) {
+                debug!(
+                    "Skipping {} export because it's not in export list",
+                    name.display()
+                );
+                continue;
+            }
 
             let new_in_path = in_path.join(&name);
             let new_out_path = out_path.map(|p| p.join(&name));
@@ -393,7 +442,7 @@ impl<'a> Compose<'a> {
 }
 
 pub fn do_compose(args: ComposeArgs) -> Result<()> {
-    let mut compose = Compose::new(&args)?;
+    let mut compose = Compose::new(args)?;
 
     compose.process().context("failed to process entries")?;
 

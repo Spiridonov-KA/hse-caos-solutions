@@ -1,4 +1,4 @@
-FROM rust:1.88
+FROM rustlang/rust:nightly-slim
 
 WORKDIR /public
 

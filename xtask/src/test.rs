@@ -1,9 +1,11 @@
 use std::{
     collections::BTreeSet,
-    fs,
+    fs, io,
     path::{Path, PathBuf},
+    process,
 };
 
+use crate::util::PathExt;
 use annotate_snippets::{Level, Renderer, Snippet, renderer};
 use anyhow::{Context, Result, anyhow, bail};
 use clap::Parser;
@@ -12,6 +14,8 @@ use globset::{Glob, GlobSetBuilder};
 use itertools::Itertools;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use tap::Tap;
+use tracing::warn;
 use walkdir::WalkDir;
 use xshell::{Shell, cmd};
 
@@ -180,29 +184,6 @@ struct TestContext {
     shell: Shell,
 }
 
-trait PathExt {
-    fn to_str_logged(&self) -> Result<&str>;
-
-    fn strip_prefix_logged<P: AsRef<Path>>(&self, prefix: P) -> Result<&Path>;
-}
-
-impl PathExt for Path {
-    fn to_str_logged(&self) -> Result<&str> {
-        self.to_str()
-            .ok_or_else(|| anyhow!("couldn't convert {} to UTF-8 string", self.display()))
-    }
-
-    fn strip_prefix_logged<P: AsRef<Path>>(&self, prefix: P) -> Result<&Path> {
-        self.strip_prefix(&prefix).with_context(|| {
-            format!(
-                "{} is not a prefix of {}",
-                self.display(),
-                prefix.as_ref().display(),
-            )
-        })
-    }
-}
-
 impl TestContext {
     fn new(args: TestArgs) -> Result<Self> {
         let repo = gix::discover(".")?;
@@ -234,44 +215,85 @@ impl TestContext {
         })
     }
 
+    fn run_cmake(
+        &self,
+        build_dir: &Path,
+        profile: BuildProfile,
+        fresh: bool,
+    ) -> io::Result<process::ExitStatus> {
+        let mut cmd = process::Command::new("cmake");
+        cmd.arg("-B")
+            .arg(build_dir)
+            .arg("-S")
+            .arg(&self.repo_root)
+            .arg(format!(
+                "-DCMAKE_BUILD_TYPE={}",
+                profile.to_cmake_build_type()
+            ));
+        if fresh {
+            cmd.arg("--fresh");
+        }
+        cmd.status()
+    }
+
     fn build_target(&self, target: &str, profile: BuildProfile) -> Result<PathBuf> {
         let build_dir = self.repo_root.join(profile.to_build_dir());
         if !build_dir.exists() {
             fs::create_dir(&build_dir)
                 .with_context(|| format!("failed to create {}", build_dir.display()))?;
-            let repo_path = &self.repo_root;
-            let cmake_build_type = profile.to_cmake_build_type();
-            cmd!(
-                self.shell,
-                "cmake -B {build_dir} -S {repo_path} -DCMAKE_BUILD_TYPE={cmake_build_type}"
-            )
-            .run()?;
+            self.run_cmake(&build_dir, profile, false)?;
         }
 
         let cpus_str = format!("{}", num_cpus::get());
-        cmd!(
-            self.shell,
-            "cmake --build {build_dir} --target {target} -j {cpus_str}"
-        )
-        .run()?;
+        let build = || {
+            process::Command::new("cmake")
+                .arg("--build")
+                .arg(&build_dir)
+                .arg("--target")
+                .arg(target)
+                .arg("-j")
+                .arg(&cpus_str)
+                .status()
+        };
 
-        Ok(build_dir.join(target))
+        let target_path = build_dir.join(target);
+
+        let status = build()?;
+        match status.exit_ok() {
+            Ok(()) => return Ok(target_path),
+            Err(e) => warn!("Failed to build target: {e}. Going to re-run cmake"),
+        }
+
+        self.run_cmake(&build_dir, profile, true)?;
+
+        build()?.exit_ok().context("running cmake")?;
+
+        Ok(target_path)
     }
 
     fn nejudge_runner_path(&self) -> PathBuf {
-        let mut path = self.repo_root.clone();
         // TODO: Get this value from global config
         // or get rid of this python script entirely
-        path.push("common/tools/test.py");
-        path
+        PathBuf::from_iter([&self.repo_root, Path::new("common/tools/test.py")])
+    }
+
+    fn task_root(&self) -> PathBuf {
+        PathBuf::from_iter([&self.repo_root, &self.task_path])
+    }
+
+    fn at_task_root<P: AsRef<Path>>(&self, p: P) -> PathBuf {
+        self.task_root().tap_mut(|root| root.push(p))
     }
 
     fn build_nejudge_infra(&self, target: &str) -> Result<PathBuf> {
         if let Some(s) = target.strip_prefix("std:") {
             return Ok(PathBuf::from(s));
         }
-        if let Some(s) = target.strip_prefix("bin:") {
+        if let Some(s) = target.strip_prefix("build:") {
             return self.build_target(s, BuildProfile::Release);
+        }
+        if let Some(s) = target.strip_prefix("direct:") {
+            return Ok(self.at_task_root(s));
         }
         // TODO: bail?
         Ok(PathBuf::from(target))
