@@ -71,7 +71,7 @@ test-public-repo-build:
     - trap "rm -rf $public_dir" EXIT
     - echo "Using $public_dir for public repo"
     - git clone https://gitlab.com/oleg-shatov/hse-caos-public.git "$public_dir"
-    - cargo xtask compose --in-path . --out-path "$public_dir" --skip .git --stat
+    - ./common/tools/export_to.sh "$public_dir"
     - |
       (cd $public_dir;
       CXX=$(which clang++-19) CC=$(which clang-19) ./common/tools/build_all_tasks.sh &&
@@ -98,7 +98,7 @@ push-public:
     - trap "rm -rf $public_dir" EXIT
     - echo "Using $public_dir for public repo"
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git "$public_dir"
-    - cargo xtask compose --in-path . --out-path "$public_dir" --skip .git --skip target --skip .cargo-home --stat
+    - ./common/tools/export_to.sh "$public_dir"
     - |
       (cd $public_dir &&
       git add . &&

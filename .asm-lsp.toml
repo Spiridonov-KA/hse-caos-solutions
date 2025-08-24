@@ -3,33 +3,18 @@ path = "common/syscalls/src/asm/x86_64"
 instruction_set = "x86/x86-64"
 assembler = "gas"
 
-[project.opts]
-compiler = "as"
-compile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
-
 [[project]]
 path = "common/syscalls/src/asm/aarch64"
 instruction_set = "arm"
 assembler = "gas"
 
-[project.opts]
-compiler = "as"
-compile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
-
 [[project]]
 path = "common/nostd/src/asm/x86_64"
 instruction_set = "x86/x86-64"
 assembler = "gas"
-
-[project.opts]
-compiler = "as"
-compile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
+ompile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
 
 [[project]]
 path = "common/nostd/src/asm/aarch64"
 instruction_set = "arm"
 assembler = "gas"
-
-[project.opts]
-compiler = "as"
-compile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
