@@ -17,5 +17,5 @@ test_solutions:
     - >
       (cd /public;
       cargo xtask move --from $CI_PROJECT_DIR --to . &&
-      ./common/tools/test_tasks_with_diff.sh)
+      ./common/tools/test_tasks_with_diff.sh $CI_PROJECT_DIR)
 
