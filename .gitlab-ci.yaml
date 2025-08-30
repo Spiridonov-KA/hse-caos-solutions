@@ -2,7 +2,7 @@ stages:
   - test
 
 test_solutions:
-  image: domwst/caos-private-ci
+  image: domwst/caos-runner
   tags: [caos]
   stage: test
   rules:
