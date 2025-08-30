@@ -6,10 +6,10 @@ test_solutions:
   stage: test
   rules:
     # Public gitlab repo
-    - if: '$CI_PROJECT_NAME = "hse-caos-public"'
+    - if: $CI_PROJECT_NAME == "hse-caos-public"
       when: never
     # Public manytask repo
-    - if: '$CI_PROJECT_NAME = "public-repository"'
+    - if: $CI_PROJECT_NAME == "public-repository"
       when: never
     - when: on_success
   script:
