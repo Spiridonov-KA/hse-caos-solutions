@@ -1,6 +1,6 @@
 use std::{
     collections::BTreeSet,
-    fs,
+    fs, io,
     path::{Path, PathBuf},
     rc::Rc,
 };
@@ -124,7 +124,13 @@ impl TaskContext {
     }
 
     pub fn is_task(path: &Path) -> Result<bool> {
-        let r: Result<_> = try { fs::metadata(path.join(TESTING_CONFIG_FILENAME))?.is_file() };
+        let r: Result<_> = try {
+            match fs::metadata(path.join(TESTING_CONFIG_FILENAME)) {
+                Ok(meta) => meta.is_file(),
+                Err(e) if e.kind() == io::ErrorKind::NotFound => false,
+                Err(e) => Err(e)?,
+            }
+        };
         r.with_context(|| format!("checking task at {}", path.display()))
     }
 
