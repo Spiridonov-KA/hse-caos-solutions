@@ -1,5 +1,6 @@
 #![deny(warnings)]
 #![feature(exit_status_error)]
+#![feature(try_blocks)]
 #![feature(impl_trait_in_bindings)]
 
 mod compose;

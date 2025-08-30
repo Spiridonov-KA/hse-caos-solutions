@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -49,14 +49,14 @@ impl MoveContext {
 
     pub fn run(&self) -> Result<()> {
         for entry in WalkDir::new(&self.to.repo_root).into_iter() {
-            let entry = entry?;
+            let entry =
+                entry.with_context(|| format!("iterating over {}", self.to.repo_root.display()))?;
 
             if !entry.file_type().is_dir() || !TaskContext::is_task(entry.path())? {
                 continue;
             }
 
-            let ctx_to =
-                TaskContext::new(&entry.path().canonicalize()?, Rc::clone(&self.to.repo_root))?;
+            let ctx_to = TaskContext::new(entry.path(), Rc::clone(&self.to.repo_root))?;
             let ctx_from = TaskContext::new(
                 &self.from.repo_root.join(&ctx_to.task_path),
                 Rc::clone(&self.from.repo_root),
@@ -85,5 +85,7 @@ impl MoveContext {
 }
 
 pub fn do_move(args: MoveArgs) -> Result<()> {
-    MoveContext::new(args)?.run()
+    MoveContext::new(args)
+        .context("creating move context")?
+        .run()
 }
