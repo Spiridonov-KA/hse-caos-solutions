@@ -14,5 +14,8 @@ test_solutions:
       when: never
     - when: on_success
   script:
-    - (cd /public; cargo xtask move --from $CI_PROJECT_DIR --to . && ./common/tools/test_all_tasks.sh)
+    - >
+      (cd /public;
+      cargo xtask move --from $CI_PROJECT_DIR --to . &&
+      ./common/tools/test_tasks_with_diff.sh)
 
