@@ -6,7 +6,7 @@ stages:
 .base:
   image: domwst/caos-private-ci
   timeout: 20m
-  tags: ["kek-today"]
+  tags: [kek-today]
   variables:
     CACHE_DIR: /cache_cicd/$CI_PROJECT_PATH
     CARGO_HOME: $CACHE_DIR/.cargo-home

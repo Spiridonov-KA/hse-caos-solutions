@@ -1,5 +1,4 @@
 version: 1
-status: in_progress
 
 ui:
   task_url_template: https://gitlab.com/oleg-shatov/hse-caos-public/-/tree/main/tasks/$GROUP_NAME/$TASK_NAME

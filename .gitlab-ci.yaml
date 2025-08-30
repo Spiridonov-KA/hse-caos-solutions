@@ -3,6 +3,7 @@ stages:
 
 test_solutions:
   image: domwst/caos-private-ci
+  tags: [caos]
   stage: test
   rules:
     # Public gitlab repo
