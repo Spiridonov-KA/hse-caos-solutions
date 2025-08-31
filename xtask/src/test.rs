@@ -318,7 +318,7 @@ impl TestContext {
         let client = if let Some(ref client) = self.manytask_client {
             client
         } else {
-            info!("Not in CI score wouldn't be reported");
+            info!("Not in CI. Score wouldn't be reported");
             return Ok(());
         };
 
@@ -328,6 +328,8 @@ impl TestContext {
             info!("No username so score wouldn't be reported");
             return Ok(());
         };
+
+        info!("Reporting score for user {user}");
 
         client.report_score_with_retries(
             self.repo_config.manytask_course_name,

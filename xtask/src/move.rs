@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
     rc::Rc,
 };
-use tracing::info;
+use tracing::{debug, trace};
 use walkdir::WalkDir;
 
 use clap::Parser;
@@ -62,17 +62,17 @@ impl MoveContext {
                 Rc::clone(&self.from.repo_root),
             )?;
 
-            info!("Found task {}", ctx_to.task_path.display());
+            debug!("Found task {}", ctx_to.task_path.display());
 
             for file in ctx_to.find_editable_files()? {
-                info!("Removing target file {}", file.display());
+                trace!("Removing target file {}", file.display());
                 fs::remove_file(file)?;
             }
 
             for file_source in ctx_from.find_editable_files()? {
                 let file_local = ctx_from.strip_task_root_logged(&file_source)?;
                 let file_target = ctx_to.path_of(file_local);
-                info!("Copying {}", file_local.display());
+                trace!("Copying {}", file_local.display());
                 if let Some(dir) = file_target.parent() {
                     fs::create_dir_all(dir)?;
                 }
