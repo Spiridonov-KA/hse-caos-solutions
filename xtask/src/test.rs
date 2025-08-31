@@ -322,7 +322,7 @@ impl TestContext {
             return Ok(());
         };
 
-        let user = if let Ok(username) = std::env::var("GITLAB_USER_LOGIN") {
+        let user = if let Ok(username) = std::env::var("CI_PROJECT_NAME") {
             username
         } else {
             info!("No username so score wouldn't be reported");
