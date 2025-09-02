@@ -27,7 +27,7 @@ deadlines:
         - task: char-sum
           score: 10
         - task: list
-          score: 20
+          score: 100
 
 grades:
   grades:
