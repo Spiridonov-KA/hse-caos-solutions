@@ -1,6 +1,6 @@
 #include <cctype>  // std::isdigit
 #include <unistd.h>
 
-int main(void) {
+int main() {
     // TODO: your code here.
 }

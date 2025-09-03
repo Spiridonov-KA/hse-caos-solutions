@@ -4,8 +4,8 @@ ui:
   task_url_template: https://gitlab.com/oleg-shatov/hse-caos-public/-/tree/main/tasks/$GROUP_NAME/$TASK_NAME
 
   links:
-    "TG Channel": https://youtu.be/dQw4w9WgXcQ
-    "TG Chat": https://youtu.be/dQw4w9WgXcQ
+    "TG Channel": https://t.me/+_jBGtnWAYrNmMjg6
+    "TG Chat": https://t.me/+NwR0LdxxLckyMjli
 
 deadlines:
   timezone: Europe/Moscow

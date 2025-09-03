@@ -33,12 +33,10 @@ class List {
 
     void PushBack(int value) {
         UNUSED(value);  // TODO: remove before flight.
-        // TODO: your code here.
     }
 
     void PushFront(int value) {
         UNUSED(value);  // TODO: remove before flight.
-        // TODO: your code here.
     }
 
     void PopBack() {
@@ -66,7 +64,6 @@ class List {
 
     void Swap(List& other) {
         UNUSED(other);  // TODO: remove before flight.
-        // TODO: your code here.
     }
 
     // https://en.cppreference.com/w/cpp/container/list/splice
@@ -76,13 +73,11 @@ class List {
     // l1 == {1, 2, 3, 4, 5, 6};
     void Splice(List& other) {
         UNUSED(other);  // TODO: remove before flight.
-        // TODO: your code here.
     }
 
     template <class F>
     void ForEachElement(F&& f) const {
         UNUSED(f);  // TODO: remove before flight.
-        // TODO: your code here.
     }
 
   private:
