@@ -22,4 +22,4 @@ git commit -m "Up a-plus-b"
 git push
 ```
 
-За ходом тестирования можете следить по ссылке `My submits` из [manytask](https://manytask.kek.today/hse-caos-2025/).
+За ходом тестирования можете следить по ссылке `My submits` из [manytask](https://manytask.hse-caos.org/hse-caos-2025/).

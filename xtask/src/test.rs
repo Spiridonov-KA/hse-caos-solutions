@@ -110,7 +110,7 @@ impl RepoConfig {
                 ("clang-fmt-runner", "common/tools/run-clang-format.py"),
             ]),
             repo_root,
-            manytask_url: "https://manytask.kek.today",
+            manytask_url: "https://manytask.hse-caos.org",
             tester_token: std::env::var("TESTER_TOKEN").ok(),
             manytask_course_name: "hse-caos-2025",
             default_limits: CommandLimits {
@@ -509,7 +509,7 @@ impl TestContext {
 
     fn check_format(&self) -> Result<()> {
         if self.args.build_only {
-            info!("Running in build-only mode. Formatting woulnd't be checked");
+            info!("Running in build-only mode. Formatting wouldn't be checked");
             return Ok(());
         }
         let solution_files = self.task_context.find_editable_files()?;

@@ -123,10 +123,10 @@ push-public:
     - >
       curl --fail --silent -X POST -H "Authorization: Bearer $MT_TESTER_TOKEN"
       -H "Content-type: application/x-yaml" --data-binary "@.manytask.yaml"
-      "https://manytask.kek.today/api/$MT_COURSE_NAME/update_config"
+      "https://manytask.hse-caos.org/api/$MT_COURSE_NAME/update_config"
     - >
       curl --fail --silent -X POST -H "Authorization: Bearer $MT_TESTER_TOKEN"
-      "https://manytask.kek.today/api/$MT_COURSE_NAME/update_cache"
+      "https://manytask.hse-caos.org/api/$MT_COURSE_NAME/update_cache"
 
 build-container:
   extends:
