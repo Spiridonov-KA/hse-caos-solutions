@@ -1,6 +1,9 @@
 #include "reverse-list.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+
+#include <array>
+#include <span>
 #include <utility>
 
 inline void FreeList(ListNode* node) {
