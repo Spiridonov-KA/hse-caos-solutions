@@ -16,7 +16,6 @@ test_solutions:
   script:
     - >
       (cd /public;
-      # git pull &&
       cargo xtask move --from $CI_PROJECT_DIR --to . &&
       ./common/tools/test_tasks_with_diff.sh $CI_PROJECT_DIR)
 
