@@ -9,6 +9,8 @@ use std::{
 };
 use tracing::warn;
 
+use crate::util::CmdExt;
+
 pub struct ClangFmtRunner {
     repo_root: Rc<Path>, // Not necessary, but anyways
     use_old: bool,
@@ -89,8 +91,7 @@ impl ClangFmtRunner {
         }
 
         cmd.args(files.into_iter().map(|f| f.as_ref()))
-            .status()
-            .with_context(|| format!("running {cmd:?}"))?
+            .status_logged()?
             .exit_ok()
             .context("failed to check formatting, check the logs above for a possible fix")?;
 

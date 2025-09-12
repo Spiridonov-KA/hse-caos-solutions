@@ -1,5 +1,5 @@
 use anyhow::{Context, Result, anyhow};
-use std::path::Path;
+use std::{path::Path, process};
 
 pub trait PathExt {
     fn to_str_logged(&self) -> Result<&str>;
@@ -21,5 +21,15 @@ impl PathExt for Path {
                 prefix.as_ref().display(),
             )
         })
+    }
+}
+
+pub trait CmdExt {
+    fn status_logged(&mut self) -> Result<process::ExitStatus>;
+}
+
+impl CmdExt for process::Command {
+    fn status_logged(&mut self) -> Result<process::ExitStatus> {
+        self.status().with_context(|| format!("running {self:?}"))
     }
 }

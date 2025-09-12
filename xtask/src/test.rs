@@ -2,7 +2,7 @@ use std::{
     borrow::Cow,
     collections::HashMap,
     ffi::{OsStr, OsString},
-    fs, io,
+    fs,
     path::{Path, PathBuf},
     process,
     rc::Rc,
@@ -11,7 +11,7 @@ use std::{
 use crate::{
     command::{CommandBuilder, CommandLimits, CommandRunner, NSJailRunner, NativeCommandRunner},
     task::ReportScore,
-    util::{ManytaskClient, PathExt},
+    util::{CmdExt, ManytaskClient, PathExt},
 };
 use crate::{
     task::{
@@ -196,7 +196,7 @@ impl TestContext {
         build_dir: &Path,
         profile: BuildProfile,
         fresh: bool,
-    ) -> io::Result<process::ExitStatus> {
+    ) -> Result<process::ExitStatus> {
         let mut cmd = process::Command::new("cmake");
         if fresh {
             cmd.arg("--fresh");
@@ -207,7 +207,7 @@ impl TestContext {
             .arg("-S")
             .arg(self.repo_root.as_ref());
         debug!("Running cmake: {cmd:?}");
-        cmd.status()
+        cmd.status_logged()
     }
 
     fn build_target(&self, target: &str, profile: BuildProfile) -> Result<PathBuf> {
@@ -229,7 +229,7 @@ impl TestContext {
                 .arg("-j")
                 .arg(&cpus_str);
             debug!("Running build: {build_cmd:?}");
-            build_cmd.status()
+            build_cmd.status_logged()
         };
 
         let target_path = build_dir.join(target);
@@ -524,9 +524,7 @@ impl TestContext {
 
         let fmt_runner = self.repo_config.get_tool_path("clang-fmt-runner")?;
 
-        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?
-            .check(solution_files.iter())
-            .context("failed to check formatting, check the logs above for a possible fix")
+        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?.check(solution_files.iter())
     }
 }
 
