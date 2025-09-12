@@ -524,7 +524,9 @@ impl TestContext {
 
         let fmt_runner = self.repo_config.get_tool_path("clang-fmt-runner")?;
 
-        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?.check(solution_files.iter())
+        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?
+            .check(solution_files.iter())
+            .context("failed to check formatting, check the logs above for a possible fix")
     }
 }
 
