@@ -36,7 +36,15 @@ ssh-keygen -t ed25519 -C "<email>"
 git clone ssh://git@gitlab.hse-caos.org:2025/hse-caos-fall/students-2025/<username>.git
 ```
 
-Далее из директории своего локального репозитория добавьте публичный репозиторий, как второй remote для доставки обновлений:
+На вопрос `Are you sure you want to continue connecting (yes/no/[fingerprint])?`, если он есть, ответьте yes.
+
+Перейдите в папку склонированного репозитория:
+
+```bash
+cd <username>
+```
+
+Добавьте публичный репозиторий, как второй remote для доставки обновлений:
 
 ```bash
 git remote add upstream https://gitlab.com/oleg-shatov/hse-caos-public.git
