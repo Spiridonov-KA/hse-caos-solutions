@@ -433,10 +433,10 @@ impl Compose {
                 continue;
             }
 
-            if new_in_path.is_dir() {
-                self.process_dir(&new_in_path, new_out_path.as_deref())?;
-            } else if new_in_path.is_symlink() {
+            if new_in_path.is_symlink() {
                 self.process_symlink(&new_in_path, new_out_path.as_deref())?;
+            } else if new_in_path.is_dir() {
+                self.process_dir(&new_in_path, new_out_path.as_deref())?;
             } else if new_in_path.is_file() {
                 self.process_file(&new_in_path, new_out_path.as_deref())?;
             } else {
