@@ -1,0 +1,2 @@
+enable_subst
+params = ${problem.problem_dir}/static/003.dir

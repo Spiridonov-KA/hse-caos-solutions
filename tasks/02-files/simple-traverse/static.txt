@@ -1,0 +1,374 @@
+static:
+total 36
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 .
+17859058 drwxrwxr-x 4 cher cher 4096 Mar 21 09:52 ..
+18369066 drwxrwxr-x 2 cher cher 4096 Oct 24 14:00 001.dir
+18894307 drwxrwxr-x 2 cher cher 4096 Oct 24 14:21 002.dir
+19277958 drwxrwxr-x 2 cher cher 4096 Oct 24 14:27 003.dir
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 004.dir
+19408259 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 005.dir
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 006.dir
+23211652 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 007.dir
+30047164 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 008.dir
+30047264 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 009.dir
+
+static/001.dir:
+total 8
+18369066 drwxrwxr-x 2 cher cher           4096 Oct 24 14:00 .
+17979436 drwxrwxr-x 9 cher cher           4096 Oct 24 14:42 ..
+18369067 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+18369068 -rw-rw-r-- 1 cher cher              0 Oct 24 13:59 f2
+18369069 -rw-rw-r-- 1 cher cher           1024 Oct 24 14:00 f3
+18369070 -rw-rw-r-- 1 cher cher           1025 Oct 24 14:00 f4
+18369071 -rw-rw-r-- 1 cher cher           1023 Oct 24 14:00 f5
+18369072 -rw-rw-r-- 1 cher cher         232323 Oct 24 14:00 f6
+18369073 -rw-rw-r-- 1 cher cher 10000000000000 Oct 24 14:00 f7
+
+static/002.dir:
+total 8
+18894307 drwxrwxr-x 2 cher cher 4096 Oct 24 14:21 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+18894308 -rw-rw-r-- 2 cher cher 1000 Oct 24 14:20 f1
+18894309 prw-rw-r-- 1 cher cher    0 Oct 24 14:21 f2
+18894310 -rw-rw-r-- 1 cher cher    0 Oct 24 14:21 f3
+18894308 -rw-rw-r-- 2 cher cher 1000 Oct 24 14:20 f4
+18894311 lrwxrwxrwx 1 cher cher    2 Oct 24 14:21 f5 -> f4
+
+static/003.dir:
+total 8
+19277958 drwxrwxr-x 2 cher   cher   4096 Oct 24 14:27 .
+17979436 drwxrwxr-x 9 cher   cher   4096 Oct 24 14:42 ..
+19277960 -rw-rw-r-- 1 cher   cher   1000 Oct 24 14:23 f1
+19277961 -r--r----- 1 cher   cher   1000 Oct 24 14:23 f2
+19277962 -r-------- 1 ejexec cher   1000 Oct 24 14:23 f3
+19277963 ----r----- 1 cher   ejexec 1000 Oct 24 14:23 f4
+19277964 ----r----- 1 ejexec ejexec 1000 Oct 24 14:23 f5
+19277965 -r-----r-- 1 cher   ejexec 1000 Oct 24 14:23 f6
+19277966 -------r-- 1 ejexec ejexec 1000 Oct 24 14:25 f7
+19277967 -rw-rw-r-- 1 cher   cher   1000 Oct 24 14:27 f8
+
+static/004.dir:
+total 12
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+20324604 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 a
+19408252 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f1
+19408253 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f2
+
+static/004.dir/a:
+total 12
+20324604 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+20739238 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 b
+20324607 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f3
+20324608 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f4
+
+static/004.dir/a/b:
+total 12
+20739238 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+20324604 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+20995658 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 c
+20739239 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f5
+20739240 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f6
+
+static/004.dir/a/b/c:
+total 12
+20995658 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+20739238 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+21122244 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 d
+20995659 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f7
+20995660 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f8
+
+static/004.dir/a/b/c/d:
+total 12
+21122244 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+20995658 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+21508044 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 e
+21122246 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f10
+21122245 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f9
+
+static/004.dir/a/b/c/d/e:
+total 12
+21508044 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+21122244 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+21659191 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 f
+21508045 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f11
+21508046 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f12
+
+static/004.dir/a/b/c/d/e/f:
+total 12
+21659191 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 .
+21508044 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+21772143 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 g
+
+static/004.dir/a/b/c/d/e/f/g:
+total 8
+21772143 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+21659191 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+
+static/005.dir:
+total 999  # manually created, nlinks and total may be inconsistent
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a1
+99999901 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a2
+99999902 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a3
+99999903 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a4
+99999904 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a5
+99999905 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a6
+99999906 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a7
+99999907 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a8
+99999908 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a9
+99999909 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a10
+
+static/005.dir/a1:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999910 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999911 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999912 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a2:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999920 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999921 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999922 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a3:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999930 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999931 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999932 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a4:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999940 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999941 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999942 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a5:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999950 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999951 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999952 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a6:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999960 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999961 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999962 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a6:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999970 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999971 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999972 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a8:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999980 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999981 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999982 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a9:
+total 8
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999990 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999991 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999992 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+
+static/005.dir/a10:
+total 8  # number of files shouldn't matter (this problem is solved without open()), but we check this case anyway
+99999900 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+19408251 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+99999000 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f1
+99999001 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f2
+99999002 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f3
+99999003 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f4
+99999004 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f5
+99999005 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f6
+99999006 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f7
+99999007 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f8
+99999008 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f9
+99999009 -rw-rw-r-- 1 cher cher           1000 Oct 24 13:59 f10
+
+static/006.dir:
+total 20
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+22556736 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 a
+22684336 drwx------ 2 cher cher 4096 Oct 24 14:37 b
+22966368 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 c
+22422315 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f1
+22422316 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f2
+
+static/006.dir/a:
+total 8
+22556736 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 .
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 ..
+22556737 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f3
+22556738 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f4
+
+static/006.dir/b:
+total 8
+22684336 drwx------ 2 cher cher 4096 Oct 24 14:37 .
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 ..
+22684337 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f5
+22684338 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f6
+
+static/006.dir/c:
+total 8
+22966368 drwxrwxr-x 2 cher cher 4096 Oct 24 14:37 .
+22422314 drwxrwxr-x 5 cher cher 4096 Oct 24 14:37 ..
+22966369 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f7
+22966370 -rw-rw-r-- 1 cher cher    0 Oct 24 14:37 f8
+
+static/007.dir:
+total 12
+23211652 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+23355743 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 a
+23211653 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f1
+23211654 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f2
+
+static/007.dir/a:
+total 12
+23355743 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+23211652 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+23472929 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 b
+23355744 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f3
+23355745 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f4
+
+static/007.dir/a/b:
+total 12
+23472929 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+23355743 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+23638795 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 c
+23472930 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f5
+23472931 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f6
+
+static/007.dir/a/b/c:
+total 12
+23638795 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+23472929 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+24143744 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 d
+23638796 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f7
+23638797 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f8
+
+static/007.dir/a/b/c/d:
+total 12
+24143744 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+23638795 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+27835847 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 e
+24143746 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f10
+24143745 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f9
+
+static/007.dir/a/b/c/d/e:
+total 12
+27835847 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+24143744 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+29650869 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 f
+27835848 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f11
+27835849 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f12
+
+static/007.dir/a/b/c/d/e/f:
+total 12
+29650869 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 .
+27835847 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+29905167 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 g
+
+static/007.dir/a/b/c/d/e/f/g:
+total 8
+29905167 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+29650869 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+
+static/008.dir:
+total 12
+30047164 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+30171762 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 a
+30047165 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f1
+30047166 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f2
+
+static/008.dir/a:
+total 12
+30171762 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+30047164 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+30546618 drwxrwxr-x 3 cher cher 4096 Oct 24 14:43 b
+30171763 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f3
+30171764 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f4
+
+static/008.dir/a/b:
+total 12
+30546618 drwxrwxr-x 3 cher cher 4096 Oct 24 14:43 .
+30171762 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+30952705 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 c
+30546619 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f5
+30546620 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f6
+30546621 lrwxrwxrwx 1 cher cher    7 Oct 24 14:43 z -> ../../a
+
+static/008.dir/a/b/c:
+total 12
+30952705 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+30546618 drwxrwxr-x 3 cher cher 4096 Oct 24 14:43 ..
+31071597 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 d
+30952706 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f7
+30952707 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f8
+
+static/008.dir/a/b/c/d:
+total 12
+31071597 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+30952705 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+31213628 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 e
+31071599 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f10
+31071598 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f9
+
+static/008.dir/a/b/c/d/e:
+total 12
+31213628 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+31071597 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+31339107 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 f
+31213629 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f11
+31213630 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 f12
+
+static/008.dir/a/b/c/d/e/f:
+total 12
+31339107 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 .
+31213628 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 ..
+31597001 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 g
+
+static/008.dir/a/b/c/d/e/f/g:
+total 8
+31597001 drwxrwxr-x 2 cher cher 4096 Oct 24 14:32 .
+31339107 drwxrwxr-x 3 cher cher 4096 Oct 24 14:32 ..
+
+static/009.dir:
+total 8
+30047164 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+17979436 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+88888800 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .hidden_dir.
+
+static/009.dir/.hidden_dir.:
+total 8
+88888800 drwxrwxr-x 3 cher cher 4096 Oct 24 14:33 .
+30047264 drwxrwxr-x 9 cher cher 4096 Oct 24 14:42 ..
+88888801 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 .hidden_file.
+88888802 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 also...this
+88888803 -rw-rw-r-- 1 cher cher    0 Oct 24 14:33 ...and_this...
+88888804 lrwxrwxrwx 1 cher cher    5 Oct 24 14:33 .this-as-well -> .nope

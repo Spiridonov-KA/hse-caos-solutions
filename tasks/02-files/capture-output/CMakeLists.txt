@@ -1,0 +1,1 @@
+add_catch_executable(test_capture_output test.cpp)

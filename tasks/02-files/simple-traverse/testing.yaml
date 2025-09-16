@@ -1,0 +1,20 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, create_dir.py, static.txt]
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, sorted-lines, --run-cmd, build:solution_simple_traverse]
+    profiles:
+      - asan
+      - release
+  - type: forbidden-patterns
+    token:
+      - filesystem
+      - system
+      - recursive_directory_iterator
+      - directory_entry
+      - directory_iterator
+  - type: report-score
+    task: simple-traverse
+editable:
+  - solution.cpp
+

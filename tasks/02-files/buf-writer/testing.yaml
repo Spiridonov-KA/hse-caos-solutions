@@ -1,0 +1,17 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_buf_writer]
+    profiles:
+      - asan
+      - release
+  - type: forbidden-patterns
+    token:
+      - WritesCount
+      - TargetFd
+      - NextError
+      - EnableTrim
+    hint: "???"
+  - type: report-score
+    task: buf-writer
+editable:
+  - writer.hpp

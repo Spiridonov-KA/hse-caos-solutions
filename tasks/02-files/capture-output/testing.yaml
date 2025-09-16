@@ -1,0 +1,17 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_capture_output]
+    profiles:
+      - asan
+      - release
+  - type: forbidden-patterns
+    token:
+      - fork
+      - vfork
+      - clone
+      - clone3
+      - thread
+  - type: report-score
+    task: capture-output
+editable:
+  - capture.hpp
