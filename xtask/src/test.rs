@@ -337,9 +337,18 @@ impl TestContext {
 
         let cmd = {
             let mut limits = self.repo_config.default_limits;
-            if [BuildProfile::ASan, BuildProfile::TSan].contains(&profile) {
-                debug!("Increasing memory limit because build type is {profile:?}");
-                limits.memory = limits.memory.map(|m| m * 2);
+            let memory_multiplier = match profile {
+                // https://clang.llvm.org/docs/AddressSanitizer.html#limitations
+                BuildProfile::ASan => 3,
+                // https://releases.llvm.org/18.1.7/tools/clang/docs/ThreadSanitizer.html#introduction
+                BuildProfile::TSan => 9,
+                _ => 1,
+            };
+            if memory_multiplier != 1 {
+                debug!(
+                    "Increasing memory limit {memory_multiplier} times because build type is {profile:?}"
+                );
+                limits.memory = limits.memory.map(|m| m * memory_multiplier);
             }
 
             CommandBuilder::new(bin)
