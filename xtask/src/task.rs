@@ -15,7 +15,7 @@ use crate::util::PathExt;
 
 const TESTING_CONFIG_FILENAME: &str = "testing.yaml";
 
-#[derive(Debug, Serialize, Deserialize, Clone, Copy, EnumIter)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, EnumIter, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub(crate) enum BuildProfile {
     Release,

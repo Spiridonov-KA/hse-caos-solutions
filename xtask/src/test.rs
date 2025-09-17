@@ -335,13 +335,21 @@ impl TestContext {
 
         let bin = args.first().context("no cmd was given")?;
 
-        let cmd = CommandBuilder::new(bin)
-            .args(&args[1..])
-            // TODO: Move to config
-            .inherit_envs(["PATH", "USER", "HOME", "TERM"])
-            .with_limits(self.repo_config.default_limits)
-            .with_rw_mount(&*self.repo_root)
-            .with_cwd(self.task_context.full_path());
+        let cmd = {
+            let mut limits = self.repo_config.default_limits;
+            if [BuildProfile::ASan, BuildProfile::TSan].contains(&profile) {
+                debug!("Increasing memory limit because build type is {profile:?}");
+                limits.memory = limits.memory.map(|m| m * 2);
+            }
+
+            CommandBuilder::new(bin)
+                .args(&args[1..])
+                // TODO: Move to config
+                .inherit_envs(["PATH", "USER", "HOME", "TERM"])
+                .with_limits(limits)
+                .with_rw_mount(&*self.repo_root)
+                .with_cwd(self.task_context.full_path())
+        };
 
         self.cmd_runner.status(&cmd)?.exit_ok()?;
 
