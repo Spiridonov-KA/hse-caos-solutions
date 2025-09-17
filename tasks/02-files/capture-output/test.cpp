@@ -8,6 +8,7 @@
 #include <catch2/catch_get_random_seed.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <random>
 
