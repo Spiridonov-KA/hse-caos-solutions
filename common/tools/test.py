@@ -13,7 +13,7 @@ try:
 except ImportError:
     def cache(func):
         return func
-from typing import Optional, Any, cast
+from typing import Optional, Any, cast, Union
 import difflib
 import shutil
 import resource
@@ -203,9 +203,9 @@ def res_checker(res: bytes, ans: Path, checker: str):
 
 def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str, params: str,
                  output_file: Optional[str], env_add: Optional[dict[str, str]],
-                 interactor: Path | str | None, initializer: Optional[str], user: Optional[str],
+                 interactor: Union[Path, str, None], initializer: Optional[str], user: Optional[str],
                  meta: dict[str, Any], is_pipeline: bool, dirent: Path, static_copy: bool, input_filename: str,
-                 checker: Path | str, may_fail_local: list[str], skip_tests: bool, run_initializer_till_end: bool) -> bytes:
+                 checker: Union[Path, str], may_fail_local: list[str], skip_tests: bool, run_initializer_till_end: bool) -> bytes:
     input_file = input_file.absolute()
     correct_file = correct_file.absolute()
     inf_file = inf_file.absolute()
