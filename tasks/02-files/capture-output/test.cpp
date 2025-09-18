@@ -25,6 +25,14 @@ void Flush() {
     std::fflush(stderr);
 }
 
+template <class Rng>
+std::string GenerateStr(Rng& rng, size_t n) {
+    UniformCharDistribution dist('a', 'z');
+    std::string s(n, ' ');
+    std::generate(s.begin(), s.end(), [&rng, &dist] { return dist(rng); });
+    return s;
+}
+
 void ResetCinState() {
     std::cin.clear();
     std::clearerr(stdin);
@@ -129,17 +137,10 @@ TEST_CASE("HugeIO") {
 
     static constexpr size_t kBufSize = 4 << 10;
     std::mt19937 rng(Catch::getSeed());
-    UniformCharDistribution distr('a', 'z');
 
-    auto create_string = [&] {
-        std::string s(kBufSize, ' ');
-        std::generate(s.begin(), s.end(), [&] { return distr(rng); });
-        return s;
-    };
-
-    auto inp = create_string();
-    auto my_out = create_string();
-    auto my_err = create_string();
+    auto inp = GenerateStr(rng, kBufSize);
+    auto my_out = GenerateStr(rng, kBufSize);
+    auto my_err = GenerateStr(rng, kBufSize);
 
     std::string actual_inp;
     Flush();
@@ -170,21 +171,14 @@ TEST_CASE("ErrorRecovery") {
     static constexpr int kBaseFdCount = 6;  // 3 from the guard
 
     std::mt19937 rng(Catch::getSeed());
-    UniformCharDistribution distr('a', 'z');
-
-    auto create_string = [&](size_t len) {
-        std::string s(len, ' ');
-        std::generate(s.begin(), s.end(), [&] { return distr(rng); });
-        return s;
-    };
 
     FileDescriptorsGuard guard;
 
     for (int i = 0; i <= 10; ++i) {
         RLimGuard files_guard(RLIMIT_NOFILE, kBaseFdCount + i);
-        auto out = create_string(10);
-        auto err = create_string(10);
-        auto inp = create_string(10);
+        auto out = GenerateStr(rng, 10);
+        auto err = GenerateStr(rng, 10);
+        auto inp = GenerateStr(rng, 10);
 
         Flush();
         auto result = CaptureOutput(
@@ -216,4 +210,66 @@ TEST_CASE("ErrorRecovery") {
 
         CHECK_GUARD(guard);
     }
+}
+
+TEST_CASE("RawIO") {
+    constexpr size_t kBufSize = 10;
+
+    std::mt19937 rng(Catch::getSeed());
+    auto input = GenerateStr(rng, kBufSize);
+    auto output = GenerateStr(rng, kBufSize);
+    auto error = GenerateStr(rng, kBufSize);
+
+    auto write_all = [](int fd, std::string_view data) -> int {
+        while (!data.empty()) {
+            int w = write(fd, data.data(), data.size());
+            if (w == -1) {
+                return -errno;
+            }
+            data = data.substr(w);
+        }
+        return 0;
+    };
+
+    char real_input[kBufSize + 1];
+
+    int out_err = 0;
+    int err_err = 0;
+    int in_err = 0;
+    auto result = CaptureOutput(
+        [&] {
+            out_err = write_all(STDOUT_FILENO, output);
+            err_err = write_all(STDERR_FILENO, error);
+
+            char* in = real_input;
+            char* real_in_end = real_input + kBufSize;
+            while (in < real_in_end) {
+                int r = read(0, in, real_in_end - in);
+                if (r == -1) {
+                    in_err = -errno;
+                    break;
+                }
+                if (r == 0) {
+                    in_err = 1023;
+                    break;
+                }
+                in += r;
+            }
+
+            if (read(0, in, 1) != 0) {
+                in_err = 1024;
+            }
+        },
+        input);
+
+    REQUIRE(out_err == 0);
+    REQUIRE(err_err == 0);
+    REQUIRE(in_err == 0);
+
+    REQUIRE(result.index() == 0);
+    auto [out, err] = std::get<0>(result);
+
+    CHECK(out == output);
+    CHECK(err == error);
+    CHECK(std::string_view{real_input, kBufSize} == input);
 }
