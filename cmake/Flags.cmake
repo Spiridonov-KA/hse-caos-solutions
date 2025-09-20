@@ -29,9 +29,12 @@ set(CMAKE_CXX_FLAGS
 )
 
 function (add_flag_if_supported flag)
-    check_cxx_compiler_flag(flag HAS_FLAG)
-    if (HAS_FLAG)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
+    string(MAKE_C_IDENTIFIER "${flag}" _id)
+    set(_has "HAS_${_id}")
+
+    check_cxx_compiler_flag("${flag}" ${_has})
+    if (${_has})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
     endif()
 endfunction()
 
