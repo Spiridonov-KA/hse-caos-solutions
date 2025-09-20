@@ -85,6 +85,9 @@ check-rust-infra:
 
 test-public-repo-build:
   extends: [.test-base, .clone-repo]
+  variables:
+    CARGO_HOME: "${CARGO_HOME_BASE}-clang"
+    CARGO_TARGET_DIR: "${CARGO_TARGET_DIR_BASE}-clang"
   script:
     - git clone https://gitlab.com/oleg-shatov/hse-caos-public.git public-repo
     - ./common/tools/export_to.sh public-repo --skip public-repo
