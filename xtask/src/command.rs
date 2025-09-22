@@ -187,6 +187,8 @@ impl CommandRunner for NSJailRunner {
             "inf",
             "--rlimit_stack",
             "inf",
+            "--rlimit_fsize", // TODO: Move to config
+            "256",
             "-q",
         ]);
 

@@ -12,6 +12,10 @@
 #include <iostream>
 #include <random>
 
+#include <fcntl.h>
+#include <sys/resource.h>
+#include <unistd.h>
+
 #define CHECK_GUARD(guard)                                                     \
     do {                                                                       \
         auto check = guard.TestDescriptorsState();                             \
@@ -175,18 +179,20 @@ TEST_CASE("ErrorRecovery") {
     FileDescriptorsGuard guard;
 
     for (int i = 0; i <= 10; ++i) {
-        RLimGuard files_guard(RLIMIT_NOFILE, kBaseFdCount + i);
         auto out = GenerateStr(rng, 10);
         auto err = GenerateStr(rng, 10);
         auto inp = GenerateStr(rng, 10);
 
         Flush();
-        auto result = CaptureOutput(
-            [&] {
-                (std::cout << out).flush();
-                std::cerr << err;
-            },
-            inp);
+        auto result = [&] {
+            RLimGuard files_guard(RLIMIT_NOFILE, kBaseFdCount + i);
+            return CaptureOutput(
+                [&] {
+                    (std::cout << out).flush();
+                    std::cerr << err;
+                },
+                inp);
+        }();
 
         if (i < 2) {
             REQUIRE(result.index() == 1);

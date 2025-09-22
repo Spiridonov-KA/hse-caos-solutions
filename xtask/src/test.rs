@@ -355,6 +355,7 @@ impl TestContext {
                 .args(&args[1..])
                 // TODO: Move to config
                 .inherit_envs(["PATH", "USER", "HOME", "TERM"])
+                .with_envs(cfg.extra_env.iter())
                 .with_limits(limits)
                 .with_rw_mount(&*self.repo_root)
                 .with_cwd(self.task_context.full_path())

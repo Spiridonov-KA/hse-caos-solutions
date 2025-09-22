@@ -1,10 +1,7 @@
 #include <random.hpp>
 
 #include <bit>
-#include <random>
 #include <utility>
-
-static_assert(std::uniform_random_bit_generator<PCGRandom>);
 
 PCGRandom::PCGRandom(uint64_t seed, uint64_t inc)
     : state_{seed}, inc_{inc | 1} {

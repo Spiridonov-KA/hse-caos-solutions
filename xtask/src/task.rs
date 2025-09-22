@@ -1,5 +1,5 @@
 use std::{
-    collections::BTreeSet,
+    collections::{BTreeSet, HashMap},
     fs, io,
     path::{Path, PathBuf},
     rc::Rc,
@@ -33,14 +33,17 @@ const fn default_true() -> bool {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub(crate) struct RunCmd {
+pub struct RunCmd {
     #[serde(default = "default_build_profiles")]
-    pub(crate) profiles: Vec<BuildProfile>,
+    pub profiles: Vec<BuildProfile>,
 
-    pub(crate) cmd: Vec<String>,
+    pub cmd: Vec<String>,
 
     #[serde(default = "default_true")]
-    pub(crate) echo: bool,
+    pub echo: bool,
+
+    #[serde(default)]
+    pub extra_env: HashMap<String, String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -6,12 +6,12 @@ use globset::{Glob, GlobSet, GlobSetBuilder};
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     fs,
     io::{self, BufRead},
     path::{Path, PathBuf},
 };
-use tracing::{debug, info};
+use tracing::{debug, info, warn};
 
 use crate::util::PathExt;
 
@@ -400,6 +400,7 @@ impl Compose {
 
         let checker = Self::get_export_checker(in_path)?;
 
+        let mut processed = HashSet::new();
         for mb_entry in dir {
             let name = mb_entry
                 .with_context(|| format!("failed to read entry in dir {}", in_path.display()))?
@@ -415,6 +416,10 @@ impl Compose {
 
             let new_in_path = in_path.join(&name);
             let new_out_path = out_path.map(|p| p.join(&name));
+
+            if let Some(ref p) = new_out_path {
+                processed.insert(PathBuf::clone(p));
+            }
 
             if self
                 .glob_set
@@ -441,6 +446,29 @@ impl Compose {
                 self.process_file(&new_in_path, new_out_path.as_deref())?;
             } else {
                 bail!("unknown thing at {}", new_in_path.display());
+            }
+        }
+
+        if let Some(out_path) = out_path {
+            for entry in fs::read_dir(out_path)
+                .with_context(|| format!("failed to read dir {}", out_path.display()))?
+            {
+                let entry = entry
+                    .with_context(|| format!("failed to read entry of {}", out_path.display()))?;
+                let path = entry.path();
+                if processed.contains(&path) {
+                    continue;
+                }
+
+                warn!(
+                    "Path {} not found in the source repository, removing",
+                    path.display()
+                );
+                if path.is_file() {
+                    fs::remove_file(&path)?;
+                } else if path.is_dir() {
+                    fs::remove_dir_all(&path)?;
+                }
             }
         }
 
