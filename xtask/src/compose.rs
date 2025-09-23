@@ -374,7 +374,7 @@ impl Compose {
     #[allow(clippy::type_complexity)]
     fn get_export_checker(dir: &Path) -> Result<Box<dyn Fn(&Path) -> bool>> {
         let export_config = Path::new(".export.yaml");
-        let path = PathBuf::from_iter([dir, export_config]);
+        let path = dir.join(export_config);
 
         let f = fs::File::open(&path);
         let f = match f {
