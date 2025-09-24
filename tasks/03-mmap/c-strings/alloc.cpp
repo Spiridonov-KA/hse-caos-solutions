@@ -17,6 +17,6 @@ char* AStrCat(const char* s1, const char* s2) {
     return nullptr;  // TODO: remove before flight.
 }
 
-void Deallocate(const char* str) {
+void Deallocate(char* str) {
     UNUSED(str);  // TODO: remove before flight.
 }

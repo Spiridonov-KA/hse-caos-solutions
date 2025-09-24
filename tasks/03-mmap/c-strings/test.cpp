@@ -139,7 +139,7 @@ TEST_CASE("StrDup") {
 
     SECTION("Performance") {
         static constexpr size_t kCopies = 16384;
-        std::vector<const char*> duplicates;
+        std::vector<char*> duplicates;
         duplicates.reserve(kCopies);
         Defer cleanup([&duplicates] {
             for (auto s : duplicates) {

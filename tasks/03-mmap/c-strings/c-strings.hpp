@@ -14,4 +14,4 @@ const char* StrStr(const char* haystack, const char* needle);
 char* StrDup(const char* str);
 char* StrNDup(const char* str, size_t limit);
 char* AStrCat(const char* s1, const char* s2);
-void Deallocate(const char*);
+void Deallocate(char*);
