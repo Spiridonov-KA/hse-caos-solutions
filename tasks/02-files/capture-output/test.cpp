@@ -182,7 +182,7 @@ TEST_CASE("ErrorRecovery") {
     std::mt19937 rng(Catch::getSeed());
 
     FileDescriptorsGuard guard;
-    const auto base_fd_count = guard.OpenFdsCount();
+    constexpr auto base_fd_count = 3;
 
     for (size_t i = 0; i <= 10; ++i) {
         auto out = GenerateStr(rng, 10);
