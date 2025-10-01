@@ -1,0 +1,19 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_magic_ring_buffer]
+    profiles:
+      - release
+  - type: forbidden-patterns
+    groups:
+      - token:
+          - for
+          - while
+          - goto
+        hint: "Each operation should be O(1) guaranteed"
+      - regex:
+          - (?:c|m|re)alloc
+        hint: "Not necessary"
+  - type: report-score
+    task: magic-ring-buffer
+editable:
+  - buffer.hpp

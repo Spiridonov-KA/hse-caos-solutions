@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_allocator]
+    profiles: [release]
+    limits:
+      wall_time_sec: 35
+  - type: report-score
+    task: allocator
+editable:
+  - allocator.cpp

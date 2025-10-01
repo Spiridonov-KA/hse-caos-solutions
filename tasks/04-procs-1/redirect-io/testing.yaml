@@ -1,0 +1,13 @@
+tests:
+  - type: run-cmd
+    cmd: [
+      python3, tool:nej-runner, --checker, build(rel):checker_redirect_io,
+      --run-cmd, build:solution_redirect_io, --static-copy, --input-file, non-existent.txt
+    ]
+    profiles:
+      - asan
+      - release
+  - type: report-score
+    task: redirect-io
+editable:
+  - solution.cpp

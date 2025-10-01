@@ -1,0 +1,2 @@
+add_caos_executable(solution_redirect_io solution.cpp)
+add_executable(checker_redirect_io checker.c)

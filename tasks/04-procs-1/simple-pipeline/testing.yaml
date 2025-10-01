@@ -1,0 +1,14 @@
+tests:
+  - type: run-cmd
+    cmd: [
+      python3, tool:nej-runner, --run-cmd, build:solution_simple_pipeline,
+    ]
+    profiles:
+      - asan
+      - release
+    limits:
+      procs: 20
+  - type: report-score
+    task: simple-pipeline
+editable:
+  - solution.cpp

@@ -71,6 +71,26 @@ deadlines:
         - task: simple-allocator
           score: 100
 
+    - group: 04-procs-1
+      start: 2025-09-01 13:00
+      steps:
+        1.0: 2025-10-13 21:00
+        0.5: 2025-10-20 21:00
+      end: 2026-01-01 00:00
+      enabled: true
+      tasks:
+        - task: redirect-io
+          score: 100
+        - task: simple-pipeline
+          score: 100
+        - task: magic-ring-buffer
+          score: 100
+        - task: proc-reduce
+          score: 100
+        - task: allocator
+          score: 100
+
+
 
 grades:
   grades:

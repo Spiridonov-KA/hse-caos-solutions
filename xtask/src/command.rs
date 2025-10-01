@@ -203,6 +203,8 @@ impl CommandRunner for NSJailRunner {
             "256",
             "--rlimit_nofile",
             "128",
+            "--nice_level",
+            "0",
             "-q",
         ]);
 

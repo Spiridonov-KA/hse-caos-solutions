@@ -1,0 +1,1 @@
+add_caos_executable(solution_simple_pipeline solution.cpp)
