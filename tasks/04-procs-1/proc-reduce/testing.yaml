@@ -4,7 +4,7 @@ tests:
     profiles: [release]
     limits:
       cpu_ms_per_sec: 4000
-      wall_time_sec: 40000
+      wall_time_sec: 50
   - type: report-score
     task: proc-reduce
 editable:

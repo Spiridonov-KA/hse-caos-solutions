@@ -1,2 +1,2 @@
 add_caos_executable(test_simple_alloc simple-allocator.cpp test.cpp)
-target_link_libraries(test_simple_alloc PRIVATE caos_nostd)
+target_link_libraries(test_simple_alloc PRIVATE caos_nostd caos_utils)

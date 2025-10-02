@@ -13,6 +13,10 @@ class PCGRandom {
 
     result_type operator()();
 
+    uint64_t Generate64();
+
+    uint32_t Generate32();
+
     void Warmup(size_t iterations = 3);
 
     static constexpr result_type min() {

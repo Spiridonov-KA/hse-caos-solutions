@@ -11,16 +11,16 @@
 struct FileDescriptorsGuard {
     FileDescriptorsGuard();
 
-    [[nodiscard]] bool TestDescriptorsState();
+    [[nodiscard]] bool TestDescriptorsState() const;
 
     size_t OpenFdsCount() const;
 
     ~FileDescriptorsGuard();
 
   private:
-    bool ShouldWarnKCmp();
-    bool TestSameFd(int fd1, int fd2);
+    bool ShouldWarnKCmp() const;
+    bool TestSameFd(int fd1, int fd2) const;
 
     std::vector<std::pair<int, int>> copies;
-    bool warned_kcmp_{false};
+    mutable bool warned_kcmp_{false};
 };

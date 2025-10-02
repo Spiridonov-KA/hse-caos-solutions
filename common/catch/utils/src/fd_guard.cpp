@@ -58,7 +58,7 @@ FileDescriptorsGuard::FileDescriptorsGuard() {
     }
 }
 
-bool FileDescriptorsGuard::TestDescriptorsState() {
+bool FileDescriptorsGuard::TestDescriptorsState() const {
     for (auto [from, to] : copies) {
         if (!TestSameFd(from, to)) {
             WARN("Descriptors " << from << " and " << to
@@ -81,7 +81,7 @@ size_t FileDescriptorsGuard::OpenFdsCount() const {
     return copies.size() * 2;
 }
 
-bool FileDescriptorsGuard::TestSameFd(int fd1, int fd2) {
+bool FileDescriptorsGuard::TestSameFd(int fd1, int fd2) const {
     int pid = getpid();
     int ret = syscall(SYS_kcmp, pid, pid, KCMP_FILE, fd1, fd2);
     if (ret == -1) {
@@ -99,7 +99,7 @@ bool FileDescriptorsGuard::TestSameFd(int fd1, int fd2) {
     return ret == 0;
 }
 
-bool FileDescriptorsGuard::ShouldWarnKCmp() {
+bool FileDescriptorsGuard::ShouldWarnKCmp() const {
     return !std::exchange(warned_kcmp_, true);
 }
 

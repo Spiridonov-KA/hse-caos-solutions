@@ -1,2 +1,2 @@
 add_catch_executable(test_proc_reduce test.cpp)
-target_link_libraries(test_proc_reduce PRIVATE benchmark)
+target_link_libraries(test_proc_reduce PRIVATE benchmark caos_utils)
