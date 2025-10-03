@@ -1,2 +1,2 @@
-add_catch_executable(test_buf_writer test.cpp wrappers.cpp)
-target_link_options(test_buf_writer PRIVATE -Wl,-wrap=write)
+add_catch_executable(test_buf_writer test.cpp)
+target_link_libraries(test_buf_writer PRIVATE glitch caos_utils)

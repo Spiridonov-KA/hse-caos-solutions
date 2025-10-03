@@ -1,12 +1,14 @@
 #include "buffer.hpp"
 
 #include <mm.hpp>
+#include <rlim-guard.hpp>
 
 #include <catch2/catch_get_random_seed.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
 #include <random>
+#include <sys/resource.h>
 #include <type_traits>
 
 TEST_CASE("DataType") {
@@ -70,6 +72,8 @@ RingBuffer CreateBuffer(size_t capacity) {
 }
 
 TEST_CASE("JustWorks") {
+    RLimGuard g{RLIMIT_NOFILE, 0};
+
     auto buf = CreateBuffer(123);
     CHECK(buf.Capacity() <= 1024);
     buf.PushBack(1);
@@ -86,6 +90,8 @@ TEST_CASE("JustWorks") {
 }
 
 TEST_CASE("Wraps") {
+    RLimGuard g{RLIMIT_NOFILE, 0};
+
     auto buf = CreateBuffer(512);
     CHECK(buf.Capacity() < 1024);
     CHECK(buf.Capacity() >= 512);
@@ -173,6 +179,8 @@ void StressTestInitialCapacity(std::mt19937_64& rng, size_t initial_capacity,
 }
 
 TEST_CASE("StressTest") {
+    RLimGuard g{RLIMIT_NOFILE, 0};
+
     std::mt19937_64 rng{Catch::getSeed()};
     static constexpr size_t kIterations = 100'000;
 
@@ -190,6 +198,8 @@ TEST_CASE("StressTest") {
 }
 
 TEST_CASE("MemoryReleased") {
+    RLimGuard g{RLIMIT_NOFILE, 0};
+
     uintptr_t begin_page;
     uintptr_t end_page;
 

@@ -6,7 +6,7 @@
 #include <assert.hpp>
 #include <defer.hpp>
 #include <io.hpp>
-#include <pcg_random.hpp>
+#include <pcg-random.hpp>
 
 #include <utility>
 

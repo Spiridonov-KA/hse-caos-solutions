@@ -1,4 +1,4 @@
-#include <pcg_random.hpp>
+#include <pcg-random.hpp>
 
 #include <bit>
 #include <utility>

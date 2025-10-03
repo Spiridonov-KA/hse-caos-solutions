@@ -1,5 +1,5 @@
-file(GLOB_RECURSE CPP_SOURCES src/cpp/*.cpp)
-file(GLOB_RECURSE ASM_SOURCES src/asm/${ARCHITECTURE}/*.S)
+file(GLOB_RECURSE CPP_SOURCES src/*.cpp)
+file(GLOB_RECURSE ASM_SOURCES src/${ARCHITECTURE}/*.S)
 
 enable_language(ASM)
 

@@ -1,6 +1,6 @@
 #include <mm.hpp>
 
-#include <internal_assert.hpp>
+#include <internal-assert.hpp>
 
 #include <cerrno>
 #include <sys/mman.h>

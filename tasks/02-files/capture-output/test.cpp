@@ -1,9 +1,9 @@
 #include "capture.hpp"
 
 #include <distributions.hpp>
-#include <fd_guard.hpp>
+#include <fd-guard.hpp>
 #include <overload.hpp>
-#include <rlim_guard.hpp>
+#include <rlim-guard.hpp>
 
 #include <catch2/catch_get_random_seed.hpp>
 #include <catch2/catch_test_macros.hpp>

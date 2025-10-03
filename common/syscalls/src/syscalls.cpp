@@ -1,4 +1,5 @@
-#include <cpp/syscall_impl.hpp>
+#include "syscall_impl.hpp"
+
 #include <macros.hpp>
 #include <syscalls.hpp>
 
@@ -7,31 +8,14 @@
 
 int Errno = 0;
 
-#define MAP0(m)
-#define MAP1(m, f, s) m(f, s)
-#define MAP2(m, f, s, ...) m(f, s), MAP1(m, __VA_ARGS__)
-#define MAP3(m, f, s, ...) m(f, s), MAP2(m, __VA_ARGS__)
-#define MAP4(m, f, s, ...) m(f, s), MAP3(m, __VA_ARGS__)
-#define MAP5(m, f, s, ...) m(f, s), MAP4(m, __VA_ARGS__)
-#define MAP6(m, f, s, ...) m(f, s), MAP5(m, __VA_ARGS__)
-
-#define MAP(n, ...) CONCAT(MAP, n)(__VA_ARGS__)
-
-#define SYSCALL_NR_ARGS_X(a, b, c, d, e, f, g, h, i, j, k, l, nr, ...) nr
-#define SYSCALL_NR_ARGS(...)                                                   \
-    SYSCALL_NR_ARGS_X(__VA_ARGS__, 6, -1, 5, -1, 4, -1, 3, -1, 2, -1, 1, -1, 0)
-
-#define SYSCALL_ARGS_MAP(m, ...)                                               \
-    MAP(SYSCALL_NR_ARGS(__VA_ARGS__), m, __VA_ARGS__)
-
 #define TO_SYSCALL_ARG(ty, name) ToSyscallArg(name)
 #define ARG_DECL(ty, name) ty name
 
 #define DEFINE_SYSCALL(ret, cpp_name, name, ...)                               \
-    ret cpp_name(SYSCALL_ARGS_MAP(ARG_DECL, __VA_ARGS__)) {                    \
+    ret cpp_name(ARGS_MAP(ARG_DECL, __VA_ARGS__)) {                            \
         return FromSysret(                                                     \
-            InternalSyscallImpl(                                               \
-                SYS_##name, SYSCALL_ARGS_MAP(TO_SYSCALL_ARG, __VA_ARGS__)),    \
+            InternalSyscallImpl(SYS_##name,                                    \
+                                ARGS_MAP(TO_SYSCALL_ARG, __VA_ARGS__)),        \
             To<ret>{});                                                        \
     }
 

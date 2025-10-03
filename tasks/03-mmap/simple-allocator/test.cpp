@@ -2,7 +2,7 @@
 
 #include <algorithms.hpp>
 #include <assert.hpp>
-#include <pcg_random.hpp>
+#include <pcg-random.hpp>
 #include <strings.hpp>
 #include <syscalls.hpp>
 

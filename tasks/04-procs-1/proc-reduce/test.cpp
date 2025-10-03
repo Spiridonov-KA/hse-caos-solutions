@@ -2,8 +2,8 @@
 
 #include <benchmark/run.hpp>
 #include <build.hpp>
-#include <fd_guard.hpp>
-#include <pcg_random.hpp>
+#include <fd-guard.hpp>
+#include <pcg-random.hpp>
 
 #include <catch2/catch_get_random_seed.hpp>
 #include <catch2/catch_test_macros.hpp>

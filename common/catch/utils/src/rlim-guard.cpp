@@ -1,6 +1,6 @@
-#include <rlim_guard.hpp>
+#include <rlim-guard.hpp>
 
-#include "internal_assert.hpp"
+#include <internal-assert.hpp>
 
 #include <sys/resource.h>
 #include <utility>

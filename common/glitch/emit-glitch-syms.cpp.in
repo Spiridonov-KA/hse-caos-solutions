@@ -1,0 +1,12 @@
+#include <cstdio>
+
+#define _STR(x) #x
+#define STR(x) _STR(x)
+#define XX(name, cname, ...) printf("%s;", STR(cname));
+
+// Yes, it's ugly, no I don't care
+int main() {
+#define GLITCH_INTERNALS
+#include "@CMAKE_CURRENT_SOURCE_DIR@/include/glitch-calls.inc"
+#undef GLITCH_INTERNALS
+}
