@@ -6,6 +6,8 @@
 #include <strings.hpp>
 #include <syscalls.hpp>
 
+#include <utility>
+
 constexpr size_t kBlockSize = 16;
 
 void Use(void* ptr, PCGRandom& rng) {
@@ -18,6 +20,8 @@ void Use(void* ptr, PCGRandom& rng) {
 #define ASSERT_ALLOC(ptr, rng)                                                 \
     do {                                                                       \
         ASSERT(ptr != nullptr, "Allocation failed");                           \
+        ASSERT(reinterpret_cast<uintptr_t>(ptr) % 16 == 0,                     \
+               "Not aligned properly");                                        \
         Use(ptr, rng);                                                         \
     } while (false)
 
@@ -81,6 +85,34 @@ void TestRepeatedRandomDeallocations(size_t iterations, PCGRandom& rng) {
     }
 }
 
+struct Node {
+    Node* next;
+    void* payload;
+};
+
+static_assert(sizeof(Node) == kBlockSize);
+
+void Exhaust(size_t blocks, PCGRandom& rng) {
+    blocks >>= 1;
+    Node* head = nullptr;
+    for (size_t i = 0; i < blocks; ++i) {
+        auto node_raw = Allocate16();
+        ASSERT_ALLOC(node_raw, rng);
+        auto node = reinterpret_cast<Node*>(node_raw);
+        node->next = std::exchange(head, node);
+
+        auto payload = Allocate16();
+        ASSERT_ALLOC(payload, rng);
+        node->payload = payload;
+    }
+
+    while (head != nullptr) {
+        auto node = std::exchange(head, head->next);
+        Deallocate16(node->payload);
+        Deallocate16(node);
+    }
+}
+
 extern "C" [[noreturn]] void Main() {
     PCGRandom rng{321};
 
@@ -94,6 +126,8 @@ extern "C" [[noreturn]] void Main() {
     RUN_TEST((TestRepeatedRandomDeallocations<2048, 1024>), 1000, rng);
     RUN_TEST((TestRepeatedRandomDeallocations<2048, 1536>), 1000, rng);
     RUN_TEST((TestRepeatedRandomDeallocations<2048, 1792>), 1000, rng);
+
+    RUN_TEST(Exhaust, (200 << 20) / kBlockSize, rng);
 
     Exit(0);
 }

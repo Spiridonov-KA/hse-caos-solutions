@@ -10,14 +10,26 @@
 
 #include <utility>
 
+void Use(void* ptr, size_t size, PCGRandom& rng) {
+    auto ptr_u64 = reinterpret_cast<uint64_t*>(ptr);
+    size_t chunks = size / sizeof(*ptr_u64);
+    for (size_t i = 0; i < chunks; ++i) {
+        ptr_u64[i] = rng.Generate64();
+    }
+
+    ptr = ptr_u64 + chunks;
+    auto leftover = size - chunks * sizeof(*ptr_u64);
+    for (size_t i = 0; i < leftover; ++i) {
+        reinterpret_cast<char*>(ptr)[i] = rng();
+    }
+}
+
 #define ASSERT_ALLOC(ptr, size, rng)                                           \
     do {                                                                       \
         ASSERT(ptr != nullptr);                                                \
-        for (size_t i = 0; i < size; ++i) {                                    \
-            reinterpret_cast<char*>(ptr)[i] = rng();                           \
-        }                                                                      \
         ASSERT(reinterpret_cast<uintptr_t>(ptr) % 16 == 0,                     \
                "Block is not aligned properly");                               \
+        Use(ptr, size, rng);                                                   \
     } while (false)
 
 void TestWorks(PCGRandom& rng) {
