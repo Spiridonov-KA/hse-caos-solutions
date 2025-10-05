@@ -271,7 +271,7 @@ impl Compose {
         let mut glob_builder = GlobSetBuilder::new();
 
         let mut add_glob = |path: &str| -> Result<()> {
-            let path = path.trim().trim_end_matches("/");
+            let path = path.trim().trim_matches('/');
             if path.is_empty() || path.starts_with("#") {
                 return Ok(());
             }

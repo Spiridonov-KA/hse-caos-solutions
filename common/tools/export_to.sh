@@ -12,7 +12,7 @@ shift
 cargo --locked xtask compose \
     --in-path . \
     --out-path $public_dir \
-    --skip .git \
+    --gitignore \
     --skip target \
     --skip .cargo-home \
     --stat \

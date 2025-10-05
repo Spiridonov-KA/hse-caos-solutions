@@ -329,7 +329,7 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/macos,c++,cmake,git,rust,rust-analyzer,vim,python,linux
 
 # Build directories
-/build_*/
+/build_*
 
 # Clangd
 .cache

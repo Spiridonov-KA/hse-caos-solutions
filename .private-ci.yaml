@@ -83,16 +83,23 @@ check-rust-infra:
   variables:
     GIT_STRATEGY: clone
 
-test-public-repo-build:
+test-public-build:
   extends: [.test-base, .clone-repo]
   variables:
     CARGO_HOME: "${CARGO_HOME_BASE}-clang"
     CARGO_TARGET_DIR: "${CARGO_TARGET_DIR_BASE}-clang"
+  cache:
+    - key: test-public-build
+      paths:
+        - build_*/
   script:
     - git clone https://gitlab.com/oleg-shatov/hse-caos-public.git public-repo
+    - git -C public-repo restore-mtime
     - ./common/tools/export_to.sh public-repo --skip public-repo
+    - mkdir -p build_{release,debug,asan,tsan}
     - |
       (cd public-repo;
+      for i in ../build_*; do ln -s $i .; done;
       CXX=$(which clang++-19) CC=$(which clang-19) ./common/tools/build_all_tasks.sh &&
       echo "Public diff:" &&
       git add -N . &&

@@ -13,8 +13,12 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get install -y \
     cmake clang-19 clang-format g++
+
+RUN apt-get install -y git-restore-mtime
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Just in case
 RUN update-alternatives --install /usr/bin/cc cc $(which gcc) 30
 RUN update-alternatives --install /usr/bin/c++ c++ $(which g++) 30
 

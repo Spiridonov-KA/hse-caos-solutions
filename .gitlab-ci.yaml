@@ -1,11 +1,13 @@
 stages:
   - test
 
+default:
+  cache: []
+
 test_solutions:
   image: domwst/caos-runner
   tags: [caos]
   stage: test
-  cache: {}
   rules:
     # Public gitlab repo
     - if: $CI_PROJECT_NAME == "hse-caos-public"

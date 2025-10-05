@@ -213,6 +213,10 @@ impl TestContext {
     fn build_target(&self, target: &str, profile: BuildProfile) -> Result<PathBuf> {
         let build_dir = self.repo_root.join(profile.build_dir());
         if !build_dir.exists() {
+            debug!(
+                "Build directory {} doesn't exist, creating",
+                build_dir.display()
+            );
             fs::create_dir(&build_dir)
                 .with_context(|| format!("failed to create {}", build_dir.display()))?;
             self.run_cmake(&build_dir, profile, false)?;
@@ -374,6 +378,12 @@ impl TestContext {
     }
 
     fn report_score(&self, cfg: &ReportScore) -> Result<()> {
+        if self.args.build_only {
+            debug!(
+                "Build-only mode, score for task {} is not reported",
+                cfg.task
+            );
+        }
         let client = if let Some(ref client) = self.manytask_client {
             client
         } else {
