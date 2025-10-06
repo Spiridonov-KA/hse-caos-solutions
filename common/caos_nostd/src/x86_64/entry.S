@@ -5,7 +5,14 @@
 .global _start
 .align 16
 _start:
-    and rsp, -0x10
-    // NB: Main should be noreturn
-    call Main
+    xor rbp, rbp  // Empty frame
+
+    mov rdi, rsp
+    push 0  // Return address
+    // NB: Entry has to be noreturn
+    jmp Entry
+
+.global Unreachable
+.align 16
+Unreachable:
     ud2

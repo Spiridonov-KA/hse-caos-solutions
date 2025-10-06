@@ -8,7 +8,9 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-file(GLOB_RECURSE SOURCES src/*.cpp)
+file(GLOB_RECURSE SOURCES
+    CONFIGURE_DEPENDS
+    src/*.cpp)
 
 add_library(catch_utils STATIC ${SOURCES})
 target_include_directories(catch_utils PUBLIC include)

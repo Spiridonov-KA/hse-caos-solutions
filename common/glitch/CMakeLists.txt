@@ -2,7 +2,9 @@ if (NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
   message(FATAL_ERROR "glitch is Linux-only (relies on GNU ld's --wrap).")
 endif()
 
-file(GLOB_RECURSE SOURCES src/*.cpp)
+file(GLOB_RECURSE SOURCES
+    CONFIGURE_DEPENDS
+    src/*.cpp)
 
 add_library(glitch STATIC ${SOURCES})
 target_include_directories(glitch PUBLIC include)

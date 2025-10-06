@@ -64,11 +64,11 @@ void TestStrStr() {
     ASSERT(StrStr(haystack, "aaaaaaaaaaa") == nullptr);
 }
 
-extern "C" [[noreturn]] void Main() {
+int Main(int, char**, char**) {
     RUN_TEST(TestStrLen);
     RUN_TEST(TestStrCmp);
     RUN_TEST(TestStrCat);
     RUN_TEST(TestStrStr);
 
-    Exit(0);
+    return 0;
 }

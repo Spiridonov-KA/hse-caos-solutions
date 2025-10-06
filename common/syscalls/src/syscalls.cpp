@@ -65,7 +65,7 @@ DEFINE_SYSCALL(int, Close, close, int, fd)
 
 void Exit(int status) {
     InternalSyscallImpl(SYS_exit, ToSyscallArg(status));
-    __builtin_unreachable();
+    Unreachable();
 }
 
 DEFINE_SYSCALL(ssize_t, Write, write, int, fd, const char*, buf, size_t, count)

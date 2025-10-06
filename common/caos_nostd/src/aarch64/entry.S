@@ -4,10 +4,14 @@
 .global _start
 .align 16
 _start:
-    mov x0, sp
-    bic x0, x0, #0xF
-    mov sp, x0
+    mov x29, #0  // Empty frame
+    mov x30, #0
 
-    // NB: Main should be noreturn
-    bl Main
+    mov x0, sp
+    // NB: Entry has to be noreturn
+    b Entry
+
+.global Unreachable
+.align 16  // Likely unnecessary
+Unreachable:
     brk #0

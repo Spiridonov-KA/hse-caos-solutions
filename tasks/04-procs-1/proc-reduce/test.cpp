@@ -9,13 +9,14 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstdint>
-#include <numeric>
-#include <ranges>
 
 template <class F>
 uint64_t CorrectReduce(uint64_t from, uint64_t to, uint64_t init, F&& f) {
-    auto r = std::views::iota(from, to);
-    return std::reduce(r.begin(), r.end(), init, std::forward<F>(f));
+    uint64_t result = init;
+    for (auto i = from; i < to; ++i) {
+        result = f(result, i);
+    }
+    return result;
 }
 
 uint64_t Inv64(uint64_t x) {

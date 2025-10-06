@@ -257,7 +257,7 @@ void TestTree(PCGRandom& rng) {
     }
 }
 
-extern "C" [[noreturn]] void Main() {
+int Main(int, char**, char**) {
     PCGRandom rng{424243};
 
     RUN_TEST(TestWorks, rng);
@@ -266,5 +266,5 @@ extern "C" [[noreturn]] void Main() {
     RUN_TEST(TestRepeatedAllocations, rng);
     RUN_TEST(TestTree, rng);
 
-    Exit(0);
+    return 0;
 }

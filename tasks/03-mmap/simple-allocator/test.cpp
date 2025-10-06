@@ -113,7 +113,7 @@ void Exhaust(size_t blocks, PCGRandom& rng) {
     }
 }
 
-extern "C" [[noreturn]] void Main() {
+int Main(int, char**, char**) {
     PCGRandom rng{321};
 
     RUN_TEST(TestSimple, rng);
@@ -129,5 +129,5 @@ extern "C" [[noreturn]] void Main() {
 
     RUN_TEST(Exhaust, (200 << 20) / kBlockSize, rng);
 
-    Exit(0);
+    return 0;
 }

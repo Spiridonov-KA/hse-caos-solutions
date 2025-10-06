@@ -3,6 +3,9 @@
 #include <sys/types.h>
 
 extern int Errno;
+extern char** Environ;
+
+extern "C" [[noreturn]] void Unreachable();
 
 int Open(const char* filename, int flags, mode_t mode);
 int OpenAt(int dirfd, const char* filename, int flags, mode_t mode);
