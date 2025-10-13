@@ -29,7 +29,6 @@ impl CommandLimits {
     }
 }
 
-#[derive(Debug)]
 pub struct CommandBuilder {
     pub cmd_name: OsString,
     pub args: Vec<OsString>,
@@ -45,7 +44,18 @@ impl CommandBuilder {
     pub fn new(cmd_name: impl Into<OsString>) -> Self {
         let cmd_name = cmd_name.into();
 
-        const DEFAULT_RO_MOUNTS: [&str; 6] = ["/bin", "/etc", "/lib", "/lib64", "/sbin", "/usr"];
+        const DEFAULT_RO_MOUNTS: [&str; 10] = [
+            "/bin",
+            "/usr/bin",
+            "/usr/sbin",
+            "/usr/libexec",
+            "/sbin",
+            "/lib",
+            "/lib64",
+            "/usr/lib",
+            "/usr/lib64",
+            "/etc",
+        ];
 
         Self {
             cmd_name: cmd_name.clone(),
@@ -196,8 +206,6 @@ impl CommandRunner for NSJailRunner {
             "128",
             "--nice_level",
             "0",
-            "-T",
-            "/tmp",
             "-q",
         ]);
 

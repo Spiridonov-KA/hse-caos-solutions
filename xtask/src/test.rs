@@ -10,11 +10,14 @@ use std::{
 
 use crate::{
     command::{CommandBuilder, CommandLimits, CommandRunner, NSJailRunner, NativeCommandRunner},
+    task::ReportScore,
+    util::{CmdExt, ManytaskClient, PathExt},
+};
+use crate::{
     task::{
-        BuildProfile, ForbiddenPatterns, ForbiddenPatternsGroup, ReportScore, RunCmd, TaskContext,
-        TestStep,
+        BuildProfile, ForbiddenPatterns, ForbiddenPatternsGroup, RunCmd, TaskContext, TestStep,
     },
-    util::{ClangFmtRunner, CommandRunnerExt, ManytaskClient, PathExt},
+    util::ClangFmtRunner,
 };
 use annotate_snippets::{Annotation, AnnotationKind, Group, Level, Renderer, Snippet, renderer};
 use anyhow::{Context, Result, bail};
@@ -148,8 +151,6 @@ struct TestContext {
 }
 
 impl TestContext {
-    const INHERIT_VARS: [&str; 4] = ["PATH", "USER", "HOME", "TERM"];
-
     fn new(args: TestArgs) -> Result<Self> {
         let repo = gix::discover(".")?;
 
@@ -197,21 +198,17 @@ impl TestContext {
         profile: BuildProfile,
         fresh: bool,
     ) -> Result<process::ExitStatus> {
-        let mut cmd = CommandBuilder::new("cmake")
-            .inherit_envs(Self::INHERIT_VARS)
-            .inherit_envs(["CXX", "CC"]);
+        let mut cmd = process::Command::new("cmake");
         if fresh {
-            cmd = cmd.arg("--fresh");
+            cmd.arg("--fresh");
         }
-        cmd = cmd
-            .arg(format!("-DCMAKE_BUILD_TYPE={}", profile.cmake_build_type()))
+        cmd.arg(format!("-DCMAKE_BUILD_TYPE={}", profile.cmake_build_type()))
             .arg("-B")
             .arg(build_dir)
             .arg("-S")
-            .arg(self.repo_root.as_ref())
-            .with_rw_mount(&*self.repo_root);
+            .arg(self.repo_root.as_ref());
         debug!("Running cmake: {cmd:?}");
-        self.cmd_runner.status_logged(&cmd)
+        cmd.status_logged()
     }
 
     fn build_target(&self, target: &str, profile: BuildProfile) -> Result<PathBuf> {
@@ -228,18 +225,16 @@ impl TestContext {
 
         let cpus_str = format!("{}", num_cpus::get());
         let build = || {
-            let build_cmd = CommandBuilder::new("cmake")
-                .inherit_envs(Self::INHERIT_VARS)
-                .inherit_envs(["CXX", "CC"])
+            let mut build_cmd = process::Command::new("cmake");
+            build_cmd
                 .arg("--build")
                 .arg(&build_dir)
                 .arg("--target")
                 .arg(target)
                 .arg("-j")
-                .arg(&cpus_str)
-                .with_rw_mount(&*self.repo_root);
+                .arg(&cpus_str);
             debug!("Running build: {build_cmd:?}");
-            self.cmd_runner.status_logged(&build_cmd)
+            build_cmd.status_logged()
         };
 
         let target_path = build_dir.join(target);
@@ -364,11 +359,10 @@ impl TestContext {
             CommandBuilder::new(bin)
                 .args(&args[1..])
                 // TODO: Move to config
-                .inherit_envs(Self::INHERIT_VARS)
+                .inherit_envs(["PATH", "USER", "HOME", "TERM"])
                 .with_envs(cfg.extra_env.iter())
                 .with_limits(limits)
-                .with_ro_mount(&*self.repo_root)
-                .with_rw_mount(self.task_context.full_path())
+                .with_rw_mount(&*self.repo_root)
                 .with_cwd(self.task_context.full_path())
         };
 
