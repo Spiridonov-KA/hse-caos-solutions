@@ -448,11 +448,14 @@ impl Compose {
                 continue;
             }
 
-            if new_in_path.is_symlink() {
+            let metadata_in = fs::symlink_metadata(&new_in_path)
+                .with_context(|| format!("failed to stat {}", new_in_path.display()))?;
+
+            if metadata_in.is_symlink() {
                 self.process_symlink(&new_in_path, new_out_path.as_deref())?;
-            } else if new_in_path.is_dir() {
+            } else if metadata_in.is_dir() {
                 self.process_dir(&new_in_path, new_out_path.as_deref())?;
-            } else if new_in_path.is_file() {
+            } else if metadata_in.is_file() {
                 self.process_file(&new_in_path, new_out_path.as_deref())?;
             } else {
                 bail!("unknown thing at {}", new_in_path.display());

@@ -9,7 +9,10 @@ use std::{
 };
 use tracing::warn;
 
-use crate::util::CmdExt;
+use crate::{
+    command::{CommandBuilder, CommandRunner},
+    util::ext::CommandRunnerExt,
+};
 
 pub struct ClangFmtRunner {
     repo_root: Rc<Path>, // Not necessary, but anyways
@@ -65,15 +68,14 @@ impl ClangFmtRunner {
         Ok(major)
     }
 
-    pub fn check<'a, I, F>(&self, files: I) -> Result<()>
+    pub fn check<'a, I, F, R: CommandRunner + ?Sized>(&self, runner: &R, files: I) -> Result<()>
     where
         I: IntoIterator<Item = &'a F>,
         F: AsRef<Path> + 'a,
     {
-        let mut cmd = process::Command::new("python3");
-        cmd.arg(&self.fmt_runner);
+        let mut cmd = CommandBuilder::new("python3").arg(&self.fmt_runner);
 
-        if self.use_old {
+        cmd = if self.use_old {
             let old_config_path = self.repo_root.join(".clang-format-11");
             let f = std::fs::File::open(&old_config_path)
                 .with_context(|| format!("failed to open {}", old_config_path.display()))?;
@@ -82,16 +84,21 @@ impl ClangFmtRunner {
                 .with_context(|| format!("failed to parse {}", old_config_path.display()))?;
             let cfg = serde_json::to_string(&cfg)?;
 
-            cmd.arg("--style").arg(cfg);
+            cmd.arg("--style").arg(cfg)
         } else {
             cmd.arg(format!(
                 "--style=file:{}/.clang-format",
                 self.repo_root.display()
-            ));
-        }
+            ))
+        };
 
-        cmd.args(files.into_iter().map(|f| f.as_ref()))
-            .status_logged()?
+        cmd = cmd
+            .args(files.into_iter().map(|f| f.as_ref()))
+            .inherit_env("PATH")
+            .with_rw_mount(&*self.repo_root)
+            .with_tmpfs_mount("/dev/shm");
+        runner
+            .status_logged(&cmd)?
             .exit_ok()
             .context("failed to check formatting, check the logs above for a possible fix")?;
 

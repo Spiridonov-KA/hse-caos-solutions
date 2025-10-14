@@ -26,16 +26,6 @@ impl PathExt for Path {
     }
 }
 
-pub trait CmdExt {
-    fn status_logged(&mut self) -> Result<process::ExitStatus>;
-}
-
-impl CmdExt for process::Command {
-    fn status_logged(&mut self) -> Result<process::ExitStatus> {
-        self.status().with_context(|| format!("running {self:?}"))
-    }
-}
-
 pub trait CommandRunnerExt {
     fn status_logged(&self, cmd: &CommandBuilder) -> Result<process::ExitStatus>;
 }

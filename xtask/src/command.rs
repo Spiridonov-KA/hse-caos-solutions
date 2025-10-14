@@ -166,6 +166,11 @@ impl CommandBuilder {
         self.mounts_ro.push(p.into());
         self
     }
+
+    pub fn with_tmpfs_mount(mut self, p: impl Into<PathBuf>) -> Self {
+        self.mounts_tmpfs.push(p.into());
+        self
+    }
 }
 
 pub trait CommandRunner {

@@ -586,7 +586,8 @@ impl TestContext {
             return Ok(());
         }
 
-        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?.check(files_iter)
+        ClangFmtRunner::new(Rc::clone(&self.repo_root), fmt_runner)?
+            .check(&*self.cmd_runner, files_iter)
     }
 }
 
