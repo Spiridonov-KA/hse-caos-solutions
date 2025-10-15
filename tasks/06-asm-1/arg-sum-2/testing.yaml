@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_arg_sum_2]
+  - type: report-score
+    task: arg-sum-2
+editable:
+  - arg-sum-2.S

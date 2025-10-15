@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_deref]
+  - type: report-score
+    task: deref
+editable:
+  - deref.S

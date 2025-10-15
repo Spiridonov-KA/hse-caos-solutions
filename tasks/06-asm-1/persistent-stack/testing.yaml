@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_persistent_stack]
+    profiles:
+      - asan
+      - release
+  - type: report-score
+    task: persistent-stack
+editable:
+  - stack.S

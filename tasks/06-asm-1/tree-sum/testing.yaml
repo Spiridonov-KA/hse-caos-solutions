@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_tree_sum]
+  - type: report-score
+    task: tree-sum
+editable:
+  - tree-sum.S

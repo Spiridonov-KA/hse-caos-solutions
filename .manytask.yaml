@@ -109,6 +109,25 @@ deadlines:
         - task: execvpe
           score: 100
 
+    - group: 06-asm-1
+      start: 2025-10-15 13:00
+      steps:
+        1.0: 2025-10-27 21:00
+        0.5: 2025-11-03 21:00
+      end: 2026-01-01 00:00
+      enabled: true
+      tasks:
+        - task: arg-sum-1
+          score: 100
+        - task: arg-sum-2
+          score: 100
+        - task: deref
+          score: 100
+        - task: tree-sum
+          score: 100
+        - task: persistent-stack
+          score: 100
+
 grades:
   grades:
     10: [{ percent: 95 }]
