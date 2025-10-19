@@ -19,6 +19,7 @@ import shutil
 import resource
 import ctypes
 import ctypes.util
+import hashlib
 
 repo_root = Path(os.path.realpath(__file__)).parent.parent.parent
 problem_dir = os.getcwd()
@@ -212,7 +213,8 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
                  output_file: Optional[str], env_add: Optional[dict[str, str]],
                  interactor: Union[Path, str, None], initializer: Optional[str], user: Optional[str],
                  meta: dict[str, Any], is_pipeline: bool, dirent: Path, static_copy: bool, input_filename: str,
-                 checker: Union[Path, str], may_fail_local: list[str], skip_tests: bool, run_initializer_till_end: bool) -> bytes:
+                 checker: Union[Path, str], may_fail_local: list[str], skip_tests: bool,
+                 run_initializer_till_end: bool, ans_checksum: str) -> bytes:
     input_file = input_file.absolute()
     correct_file = correct_file.absolute()
     inf_file = inf_file.absolute()
@@ -346,6 +348,9 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
         if output_file:
             os.remove(output_file)
 
+    current_ans_checksum = calculate_checksum(correct_file)
+    if current_ans_checksum != ans_checksum:
+        raise RuntimeError(f'Answer checksum has changed: {ans_checksum} -> {current_ans_checksum}')
     after_children_user = os.times().children_user
     real_time_limit = meta.get('time_limit', float(os.environ.get('EJUDGE_REAL_TIME_LIMIT_MS', 1.)))
     if after_children_user - before_children_user > real_time_limit:
@@ -471,6 +476,11 @@ def find_children(parent=os.getpid()) -> List[Tuple[int, List[str]]]:
     return children
 
 
+def calculate_checksum(file: Path) -> str:
+    with open(file, 'rb') as f:
+        return hashlib.file_digest(f, "sha256").hexdigest()
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--prepare-answers', action='store_true')
 parser.add_argument('--output-file', required=False)
@@ -500,11 +510,13 @@ set_child_subreaper()
 for cnt in range(args.retests_count):
     print(f"Trying tests #{cnt}")
     tests_cnt = 0
-    for test in sorted(Path('tests').glob('*.dat')):
+    tests = sorted(Path('tests').glob('*.dat'))
+    checksums = list(map(lambda p: calculate_checksum(p.with_suffix('.ans')), tests))
+    for test, checksum in zip(tests, checksums):
         tests_cnt += 1
-        inf = Path(str(test).removesuffix('.dat') + '.inf')
-        ans = Path(str(test).removesuffix('.dat') + '.ans')
-        dirent = Path(str(test).removesuffix('.dat') + '.dir')
+        inf = test.with_suffix('.inf')
+        ans = test.with_suffix('.ans')
+        dirent = test.with_suffix('.dir')
         static = Path('static')
         if static.is_dir():
             if dirent.is_dir():
@@ -522,7 +534,7 @@ for cnt in range(args.retests_count):
             return run_solution(test, ans, inf, args.run_cmd, meta.get('params', ''), args.output_file, meta.get('environ'),
                                 args.interactor, args.initializer, args.user, meta, is_pipeline, dirent, args.static_copy,
                                 args.input_filename, args.checker, args.may_fail_local, skip_tests=args.prepare_answers,
-                                run_initializer_till_end=args.initializer_run_till_end)
+                                run_initializer_till_end=args.initializer_run_till_end, ans_checksum=checksum)
 
         for i in range(args.retries_count):
             try:

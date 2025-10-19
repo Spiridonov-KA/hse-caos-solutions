@@ -9,6 +9,10 @@
 #include <cmath>
 #include <string>
 
+std::ostream& operator<<(std::ostream& os, SubstringsCount cnt) {
+    return os << "{rop = " << cnt.rop_num << ", os = " << cnt.os_num << "}";
+}
+
 TEST_CASE("JustWorks") {
     CHECK(CountSubstrings("learn_os_and_use_rop_for_good") ==
           SubstringsCount{.rop_num = 1, .os_num = 1});

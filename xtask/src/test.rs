@@ -149,6 +149,7 @@ struct TestContext {
 
 impl TestContext {
     const INHERIT_VARS: [&str; 4] = ["PATH", "USER", "HOME", "TERM"];
+    const BUILD_TMPFS_SIZE: usize = 1 << 30; // 1 GiB
 
     fn new(args: TestArgs) -> Result<Self> {
         let repo = gix::discover(".")?;
@@ -210,6 +211,7 @@ impl TestContext {
             .arg("-S")
             .arg(self.repo_root.as_ref())
             .with_rw_mount(&*self.repo_root)
+            .with_default_tmpfs_size(Self::BUILD_TMPFS_SIZE)
             .with_cwd(&*self.repo_root);
         debug!("Running cmake: {cmd:?}");
         self.cmd_runner.status_logged(&cmd)
@@ -239,6 +241,7 @@ impl TestContext {
                 .arg("-j")
                 .arg(&cpus_str)
                 .with_rw_mount(&*self.repo_root)
+                .with_default_tmpfs_size(Self::BUILD_TMPFS_SIZE)
                 .with_cwd(&*self.repo_root);
             debug!("Running build: {build_cmd:?}");
             self.cmd_runner.status_logged(&build_cmd)

@@ -41,6 +41,7 @@ pub struct CommandBuilder {
     pub mounts_rw: Vec<PathBuf>,
     pub mounts_sym: Vec<PathBuf>,
     pub mounts_tmpfs: Vec<PathBuf>,
+    pub tmpfs_default_size: usize,
 }
 
 #[allow(dead_code)]
@@ -80,6 +81,7 @@ impl CommandBuilder {
             mounts_rw: convert(DEFAULT_RW_MOUNTS),
             mounts_sym: convert(DEFAULT_SYM_MOUNTS),
             mounts_tmpfs: convert(DEFAULT_TMPFS_MOUNTS),
+            tmpfs_default_size: 8 << 20, // 8 MiB
         }
     }
 
@@ -171,6 +173,11 @@ impl CommandBuilder {
         self.mounts_tmpfs.push(p.into());
         self
     }
+
+    pub fn with_default_tmpfs_size(mut self, s: usize) -> Self {
+        self.tmpfs_default_size = s;
+        self
+    }
 }
 
 pub trait CommandRunner {
@@ -229,8 +236,16 @@ impl CommandRunner for NSJailRunner {
             "-q",
         ]);
 
+        for path in &cmd.mounts_tmpfs {
+            // TODO: Fix display
+            c.arg("-m").arg(format!(
+                "none:{}:tmpfs:size={}",
+                path.display(),
+                cmd.tmpfs_default_size
+            ));
+        }
+
         for (flag, paths) in [
-            ("-T", &cmd.mounts_tmpfs),
             ("-R", &cmd.mounts_ro),
             ("-B", &cmd.mounts_rw),
             ("-s", &cmd.mounts_sym),
