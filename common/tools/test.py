@@ -350,7 +350,7 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
 
     current_ans_checksum = calculate_checksum(correct_file)
     if current_ans_checksum != ans_checksum:
-        raise RuntimeError(f'Answer checksum has changed: {ans_checksum} -> {current_ans_checksum}')
+        raise RuntimeError("Test output tampering detected")
     after_children_user = os.times().children_user
     real_time_limit = meta.get('time_limit', float(os.environ.get('EJUDGE_REAL_TIME_LIMIT_MS', 1.)))
     if after_children_user - before_children_user > real_time_limit:

@@ -8,7 +8,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-add_library(ut_main STATIC ut_main.cpp)
+add_library(ut_main OBJECT ut_main.cpp)
 target_link_libraries(ut_main PUBLIC Catch2::Catch2)
 
 add_subdirectory(utils)
