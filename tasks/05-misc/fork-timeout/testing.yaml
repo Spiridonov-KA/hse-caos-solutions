@@ -3,6 +3,10 @@ tests:
     cmd: [python3, tool:nej-runner, --checker, cmp, --run-cmd, build:solution_fork_timeout]
     profiles:
       - release
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, ignore, --run-cmd, build:solution_fork_timeout_glitched]
+    profiles:
+      - release
   - type: forbidden-patterns
     substring:
       - poll

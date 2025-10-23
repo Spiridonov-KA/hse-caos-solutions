@@ -1,20 +1,19 @@
 [[project]]
-path = "common/syscalls/src/asm/x86_64"
+path = "common/syscalls/src/x86_64"
 instruction_set = "x86/x86-64"
 assembler = "gas"
 
 [[project]]
-path = "common/syscalls/src/asm/aarch64"
+path = "common/syscalls/src/aarch64"
 instruction_set = "arm"
 assembler = "gas"
 
 [[project]]
-path = "common/nostd/src/asm/x86_64"
+path = "common/caos_nostd/src/x86_64"
 instruction_set = "x86/x86-64"
 assembler = "gas"
-ompile_flags_txt = ["as", "--64", "-msyntax=intel", "-mnaked-reg"]
 
 [[project]]
-path = "common/nostd/src/asm/aarch64"
+path = "common/caos_nostd/src/aarch64"
 instruction_set = "arm"
 assembler = "gas"

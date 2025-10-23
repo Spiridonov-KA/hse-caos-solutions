@@ -300,7 +300,7 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
                 res, err = p.communicate()
                 if meta.get('check_stderr', False):
                     res = err
-        if not check_exit_code(p.returncode, meta.get('exit_code', '0')):
+        if checker != 'ignore' and not check_exit_code(p.returncode, meta.get('exit_code', '0')):
             if str(test) not in may_fail_local:
                 print(res)
                 raise RuntimeError(f'Solution failed with code {p.returncode} on test {input_file}, expected: {meta.get("exit_code", "0")}')

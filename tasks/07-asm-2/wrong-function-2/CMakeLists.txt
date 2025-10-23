@@ -1,0 +1,7 @@
+enable_language(ASM)
+add_catch_executable(test_wrong_function_2_1 test.cpp solution.S wrong_function_1.S)
+target_link_libraries(test_wrong_function_2_1 PRIVATE caos_utils)
+target_compile_definitions(test_wrong_function_2_1 PRIVATE USE_WRONG_1)
+
+add_catch_executable(test_wrong_function_2_2 test.cpp solution.S wrong_function_2.S)
+target_link_libraries(test_wrong_function_2_2 PRIVATE caos_utils)

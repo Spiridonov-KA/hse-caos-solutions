@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_pivot]
+  - type: report-score
+    task: pivot
+editable:
+  - solution.S

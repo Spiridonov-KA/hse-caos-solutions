@@ -1,0 +1,11 @@
+tests:
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_wrong_function_2_1]
+  - type: run-cmd
+    profiles: [asan, release]
+    cmd: [build:test_wrong_function_2_2]
+  - type: report-score
+    task: wrong-function-2
+editable:
+  - solution.S

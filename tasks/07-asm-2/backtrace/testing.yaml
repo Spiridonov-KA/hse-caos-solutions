@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, cmp, --run-cmd, build:solution_backtrace]
+    profiles:
+      - asan
+      - debug
+  - type: report-score
+    task: backtrace
+editable:
+  - solution.S

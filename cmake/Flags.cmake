@@ -13,7 +13,7 @@ elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Tsan")
     add_link_options(-fsanitize=thread)
 endif()
 
-add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Wpedantic;-Werror>")
+add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Wpedantic;-Werror;-g>")
 
 function (add_flag_if_supported flag)
     string(MAKE_C_IDENTIFIER "${flag}" _id)

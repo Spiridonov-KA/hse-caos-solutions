@@ -1,1 +1,4 @@
 add_caos_executable(solution_fork_timeout timeout.cpp)
+
+add_caos_executable(solution_fork_timeout_glitched timeout.cpp wrappers.cpp)
+target_link_libraries(solution_fork_timeout_glitched PRIVATE glitch caos_utils)

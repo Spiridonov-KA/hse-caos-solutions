@@ -1,0 +1,14 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, cmp, --run-cmd, build:solution_wrong_function_1]
+    profiles:
+      - release
+      - asan
+  - type: forbidden-patterns
+    regex:
+      - "(?:call\\s+Process)"
+    hint: "Do not use call for function calling"
+  - type: report-score
+    task: wrong-function-1
+editable:
+  - solution.S
