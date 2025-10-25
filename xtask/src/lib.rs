@@ -7,6 +7,7 @@ mod command;
 mod compose;
 pub mod dispatch;
 mod r#move;
+mod play;
 mod task;
 mod test;
 mod util;

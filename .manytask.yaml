@@ -147,6 +147,15 @@ deadlines:
         - task: pivot
           score: 150
 
+    - group: bonus
+      start: 2025-10-25 19:00
+      end: 2026-01-01 00:00
+      enabled: true
+      tasks:
+        - task: long-jump
+          is_bonus: true
+          score: 150
+
 grades:
   grades:
     10: [{ percent: 95 }]

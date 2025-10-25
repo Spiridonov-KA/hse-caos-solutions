@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_long_jump]
+    profiles: [asan, release]
+  - type: run-cmd
+    cmd: [build:test_long_jump_nostd]
+    profiles: [release]
+editable:
+  - src/*
+playground: play_long_jump

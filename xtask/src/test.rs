@@ -4,7 +4,6 @@ use std::{
     ffi::{OsStr, OsString},
     fs, iter,
     path::{Path, PathBuf},
-    process,
     rc::Rc,
 };
 
@@ -14,7 +13,7 @@ use crate::{
         BuildProfile, ForbiddenPatterns, ForbiddenPatternsGroup, ReportScore, RunCmd, TaskContext,
         TestStep,
     },
-    util::{ClangFmtRunner, CommandRunnerExt, ManytaskClient, PathExt},
+    util::{ClangFmtRunner, ManytaskClient, PathExt},
 };
 use annotate_snippets::{Annotation, AnnotationKind, Group, Level, Renderer, Snippet, renderer};
 use anyhow::{Context, Result, bail};
@@ -40,30 +39,6 @@ pub struct TestArgs {
     /// Run solution in a jail
     #[arg(long)]
     jail: bool,
-}
-
-impl BuildProfile {
-    fn representations(self) -> (&'static str, &'static str, &'static str) {
-        use BuildProfile::*;
-        match self {
-            Release => ("Release", "build_release", "rel"),
-            Debug => ("Debug", "build_debug", "dbg"),
-            ASan => ("Asan", "build_asan", "asan"),
-            TSan => ("Tsan", "build_tsan", "tsan"),
-        }
-    }
-
-    fn cmake_build_type(self) -> &'static str {
-        self.representations().0
-    }
-
-    fn build_dir(self) -> &'static str {
-        self.representations().1
-    }
-
-    fn short(self) -> &'static str {
-        self.representations().2
-    }
 }
 
 impl ForbiddenPatternsGroup {
@@ -148,21 +123,9 @@ struct TestContext {
 }
 
 impl TestContext {
-    const INHERIT_VARS: [&str; 4] = ["PATH", "USER", "HOME", "TERM"];
-    const BUILD_TMPFS_SIZE: usize = 1 << 30; // 1 GiB
-
     fn new(args: TestArgs) -> Result<Self> {
-        let repo = gix::discover(".")?;
-
-        let task_abs_path = fs::canonicalize(".")?;
-        let repo_root = repo
-            .workdir()
-            .context("failed to get working directory")?
-            .canonicalize()?;
-        let repo_root = Rc::<Path>::from(repo_root);
-        let repo_config = RepoConfig::new(Rc::clone(&repo_root));
-
-        let task_context = TaskContext::new(&task_abs_path, Rc::clone(&repo_root))?;
+        let (task_context, repo) = TaskContext::discover_at(".")?;
+        let repo_config = RepoConfig::new(Rc::clone(&task_context.repo_root));
 
         let manytask_client = if args.report_score {
             let tester_token = repo_config
@@ -184,7 +147,7 @@ impl TestContext {
         Ok(TestContext {
             repo,
             repo_config,
-            repo_root,
+            repo_root: Rc::clone(&task_context.repo_root),
             task_context,
             args,
             manytask_client,
@@ -192,74 +155,9 @@ impl TestContext {
         })
     }
 
-    fn run_cmake(
-        &self,
-        build_dir: &Path,
-        profile: BuildProfile,
-        fresh: bool,
-    ) -> Result<process::ExitStatus> {
-        let mut cmd = CommandBuilder::new("cmake")
-            .inherit_envs(Self::INHERIT_VARS)
-            .inherit_envs(["CXX", "CC"]);
-        if fresh {
-            cmd = cmd.arg("--fresh");
-        }
-        cmd = cmd
-            .arg(format!("-DCMAKE_BUILD_TYPE={}", profile.cmake_build_type()))
-            .arg("-B")
-            .arg(build_dir)
-            .arg("-S")
-            .arg(self.repo_root.as_ref())
-            .with_rw_mount(&*self.repo_root)
-            .with_default_tmpfs_size(Self::BUILD_TMPFS_SIZE)
-            .with_cwd(&*self.repo_root);
-        debug!("Running cmake: {cmd:?}");
-        self.cmd_runner.status_logged(&cmd)
-    }
-
     fn build_target(&self, target: &str, profile: BuildProfile) -> Result<PathBuf> {
-        let build_dir = self.repo_root.join(profile.build_dir());
-        if !build_dir.exists() {
-            debug!(
-                "Build directory {} doesn't exist, creating",
-                build_dir.display()
-            );
-            fs::create_dir(&build_dir)
-                .with_context(|| format!("failed to create {}", build_dir.display()))?;
-            self.run_cmake(&build_dir, profile, false)?;
-        }
-
-        let cpus_str = format!("{}", num_cpus::get());
-        let build = || {
-            let build_cmd = CommandBuilder::new("cmake")
-                .inherit_envs(Self::INHERIT_VARS)
-                .inherit_envs(["CXX", "CC"])
-                .arg("--build")
-                .arg(&build_dir)
-                .arg("--target")
-                .arg(target)
-                .arg("-j")
-                .arg(&cpus_str)
-                .with_rw_mount(&*self.repo_root)
-                .with_default_tmpfs_size(Self::BUILD_TMPFS_SIZE)
-                .with_cwd(&*self.repo_root);
-            debug!("Running build: {build_cmd:?}");
-            self.cmd_runner.status_logged(&build_cmd)
-        };
-
-        let target_path = build_dir.join(target);
-
-        let status = build()?;
-        match status.exit_ok() {
-            Ok(()) => return Ok(target_path),
-            Err(e) => warn!("Failed to build target: {e}. Going to re-run cmake"),
-        }
-
-        self.run_cmake(&build_dir, profile, true)?;
-
-        build()?.exit_ok().context("running cmake")?;
-
-        Ok(target_path)
+        self.task_context
+            .build_target(target, profile, &*self.cmd_runner)
     }
 
     fn run(self) -> Result<()> {
@@ -369,7 +267,7 @@ impl TestContext {
             CommandBuilder::new(bin)
                 .args(&args[1..])
                 // TODO: Move to config
-                .inherit_envs(Self::INHERIT_VARS)
+                .inherit_envs(TaskContext::INHERIT_VARS)
                 .with_envs(cfg.extra_env.iter())
                 .with_limits(limits)
                 .with_ro_mount(&*self.repo_root)
