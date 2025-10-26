@@ -17,7 +17,7 @@ if (setjmp(buf) == 123) {
 
 std::cout << "Setup completed" << std::endl;
 
-longjmp(buf, 123)
+longjmp(buf, 123);
 
 std::cout << "After jump" << std::endl;
 ```
