@@ -24,6 +24,18 @@ TEST_CASE("Simple") {
     UNREACHABLE;
 }
 
+TEST_CASE("HeapAlloc") {
+    auto buf = new JumpBuf;
+
+    if (SetJump(buf) == 321) {
+        delete buf;
+        return;
+    }
+
+    LongJump(buf, 321);
+    UNREACHABLE;
+}
+
 static void ChainBody(std::vector<int>* log) {
     JumpBuf buf1;
     if (SetJump(&buf1) > 0) {
