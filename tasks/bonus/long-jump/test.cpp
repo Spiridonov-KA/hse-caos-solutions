@@ -6,11 +6,16 @@
 #include <catch2/catch_get_random_seed.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <chrono>
 #include <cstdint>
+#include <iostream>
 #include <span>
+#include <thread>
 #include <utility>
 #include <variant>
 #include <vector>
+
+using namespace std::chrono_literals;
 
 #define UNREACHABLE FAIL("Should be unreachable")
 
@@ -175,4 +180,51 @@ TEST_CASE("NotExceptions") {
     CHECK(SafeDivMany({{std::numeric_limits<int64_t>::min(),
                         std::numeric_limits<int64_t>::min()}},
                       {{-1, 0}}) == Output{Error::kOverflow});
+}
+
+static bool CheckExactValue(uint64_t jump_value) {
+    JumpBuf buf;
+    uint64_t counter = 0;
+    if (SetJump(&buf) == jump_value) {
+        return true;
+    }
+    if (counter++ != 0) {
+        std::cerr << "Incorrect SetJump return value detected\n";
+        return false;
+    }
+
+    LongJump(&buf, jump_value);
+    return false;
+}
+
+TEST_CASE("NoGlobalState") {
+    constexpr size_t kWorkers = 3;
+    std::vector<std::thread> workers;
+    workers.reserve(kWorkers);
+    std::atomic<bool> stop_requested{false};
+    std::atomic<size_t> fails{0};
+
+    for (size_t i = 0; i < kWorkers; ++i) {
+        workers.emplace_back([i, &stop_requested, &fails]() {
+            PCGRandom rng{Catch::getSeed(), 2 * i};
+            while (!stop_requested.load()) {
+                auto value = rng.Generate64();
+                if (value == 0) {
+                    continue;
+                }
+                if (!CheckExactValue(rng.Generate64())) {
+                    fails.fetch_add(1);
+                }
+            }
+        });
+    }
+
+    std::this_thread::sleep_for(500ms);
+
+    stop_requested.store(true);
+    for (auto& worker : workers) {
+        worker.join();
+    }
+
+    INFO(fails.load() << " failures encountered");
 }
