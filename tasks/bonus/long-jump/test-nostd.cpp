@@ -1,3 +1,9 @@
+#include <long-jump.hpp>
+
 int Main(int, char**, char**) {
-    return 0;
+    JumpBuf buf;
+    if (SetJump(&buf) > 0) {
+        return 0;
+    }
+    LongJump(&buf, 123);
 }

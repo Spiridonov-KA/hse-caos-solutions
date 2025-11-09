@@ -1,8 +1,6 @@
 tests:
   - type: run-cmd
-    cmd: [
-      python3, tool:nej-runner, --run-cmd, build:harness_execvpe
-    ]
+    cmd: [python3, tool:nej-runner, --run-cmd, build:harness_execvpe]
     profiles: [release]
   - type: report-score
     task: execvpe

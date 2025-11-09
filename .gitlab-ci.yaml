@@ -5,7 +5,7 @@ default:
   cache: []
 
 test_solutions:
-  image: domwst/caos-runner
+  image: $RUNNER_IMAGE
   tags: [caos]
   stage: test
   rules:

@@ -71,12 +71,13 @@ struct RepoConfig {
     repo_root: Rc<Path>,
     manytask_url: &'static str,
     tester_token: Option<String>,
-    manytask_course_name: &'static str,
+    manytask_course_name: String,
     default_limits: CommandLimits,
 }
 
 impl RepoConfig {
     fn new(repo_root: Rc<Path>) -> Self {
+        let course_name = std::env::var("MT_COURSE_NAME").unwrap_or("hse-caos-2025".to_string());
         Self {
             tools: HashMap::from_iter([
                 ("nej-runner", "common/tools/test.py"),
@@ -85,7 +86,7 @@ impl RepoConfig {
             repo_root,
             manytask_url: "https://manytask.hse-caos.org",
             tester_token: std::env::var("TESTER_TOKEN").ok(),
-            manytask_course_name: "hse-caos-2025",
+            manytask_course_name: course_name,
             default_limits: CommandLimits {
                 procs: Some(10),
                 memory_mb: Some(256),
@@ -321,7 +322,7 @@ impl TestContext {
         info!("Reporting score for user {user}");
 
         client.report_score_with_retries(
-            self.repo_config.manytask_course_name,
+            &self.repo_config.manytask_course_name,
             &user,
             &cfg.task,
             commit_ts,

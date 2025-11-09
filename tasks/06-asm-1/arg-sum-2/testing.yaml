@@ -1,6 +1,6 @@
 tests:
   - type: run-cmd
-    profiles: [asan, release]
+    profiles: [release]
     cmd: [build:test_arg_sum_2]
   - type: report-score
     task: arg-sum-2

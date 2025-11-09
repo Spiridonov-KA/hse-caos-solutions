@@ -4,7 +4,7 @@ stages:
   - publish
 
 .base:
-  image: domwst/caos-private-ci
+  image: $CI_IMAGE_NAME
   timeout: 20m
   tags: [kek-today]
   variables:
@@ -43,8 +43,8 @@ build-ci-container:
     changes:
       - .private-ci/**
   script:
-    - docker build .private-ci -t domwst/caos-private-ci
-    - docker push domwst/caos-private-ci
+    - docker build .private-ci -t $CI_IMAGE_NAME
+    - docker push $CI_IMAGE_NAME
 
 test-solutions-clang:
   extends: .test-base
@@ -94,7 +94,7 @@ test-public-build:
         - build_*/
   script:
     - git restore-mtime
-    - git clone https://gitlab.com/oleg-shatov/hse-caos-public.git public-repo
+    - git clone ${PUBLIC_REPO_PULL} public-repo
     - git -C public-repo restore-mtime
     - ./common/tools/export_to.sh public-repo --skip public-repo
     - mkdir -p build_{release,debug,asan,tsan}
@@ -124,7 +124,7 @@ push-public:
   script:
     - git config --global user.name "Oleg Shatov"
     - git config --global user.email "oleq.shatov@yandex.ru"
-    - git clone --depth 2 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git public-repo
+    - git clone --depth 2 ${PUBLIC_REPO_PULL} public-repo
     - >
       curl --fail --silent -X POST -H "Authorization: Bearer $MT_TESTER_TOKEN"
       -H "Content-type: application/x-yaml" --data-binary "@.manytask.yaml"
@@ -137,7 +137,7 @@ push-public:
       (cd public-repo &&
       git add . &&
       git commit --allow-empty -m "$(sed -E 's/^pub(-manual|-ci-skip)?: //' <<< "$CI_COMMIT_TITLE")" &&
-      git push https://caos:${PUSH_TO_PUBLIC_TOKEN}@gitlab.com/oleg-shatov/hse-caos-public.git HEAD:main)
+      git push ${PUBLIC_REPO_PUSH} HEAD:main)
 
 build-container:
   extends:
@@ -150,7 +150,7 @@ build-container:
   needs: ["push-public"]
   timeout: 1h
   script:
-    - docker build . -t domwst/caos-runner
-    - docker push domwst/caos-runner
+    - docker build --build-arg CI_IMAGE_NAME=${CI_IMAGE_NAME} --build-arg PUBLIC_REPO=${PUBLIC_REPO_PULL} . -t $RUNNER_IMAGE_NAME
+    - docker push $RUNNER_IMAGE_NAME
     - docker image prune -f --filter "until=5h"
     - docker system prune -f

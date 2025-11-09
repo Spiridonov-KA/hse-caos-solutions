@@ -27,3 +27,6 @@ endfunction()
 
 add_flag_if_supported("-Wno-array-bounds")
 add_flag_if_supported("-Wno-stringop-overread")
+
+set(FREESTANDING_COMPILE_OPTIONS -nostdlib -ffreestanding -fno-stack-protector -fno-exceptions -fno-builtin)
+set(FREESTANDING_LINK_OPTIONS -nostdlib -static)

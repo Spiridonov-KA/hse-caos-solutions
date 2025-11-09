@@ -1,7 +1,10 @@
-FROM domwst/caos-private-ci
+ARG CI_IMAGE_NAME
+
+FROM $CI_IMAGE_NAME
 
 WORKDIR /public
 
-ADD --keep-git-dir https://gitlab.com/oleg-shatov/hse-caos-public.git .
+ARG PUBLIC_REPO
+ADD --keep-git-dir $PUBLIC_REPO .
 
 RUN ./common/tools/build_all_tasks.sh

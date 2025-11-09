@@ -155,17 +155,37 @@ def sorted_lines_checker(res: bytes, correct: bytes):
         raise RuntimeError(f"Output missmatched on test {test}. Check \"output\" file")
 
 
+def parse_double(data: bytes) -> float:
+    res = data.decode().strip()
+    if res.startswith('0x'):
+        return float.fromhex(res)
+    return float(res)
+
+
+def get_eps() -> float:
+    return float(os.environ.get('EPS', 0))
+
+
 def cmp_double_checker(res: bytes, correct: bytes):
-    def parse_double(data: bytes) -> float:
-        res = data.decode().strip()
-        if res.startswith('0x'):
-            return float.fromhex(res)
-        return float(res)
-    eps = float(os.environ.get('EPS', 0))
+    eps = get_eps()
     res_f = parse_double(res)
     ans_f = parse_double(correct)
     if abs(res_f - ans_f) > eps:
-        raise RuntimeError(f'{res} != {ans_f} for EPS={eps}')
+        raise RuntimeError(f'{res_f} != {ans_f} for EPS={eps}')
+
+
+def cmp_double_seq_checker(res: bytes, correct: bytes):
+    res_seq = res.split()
+    correct_seq = correct.split()
+    if len(res_seq) != len(correct_seq):
+        raise RuntimeError(f'Sequence length mismatch: {len(res_seq)} vs {len(correct_seq)}')
+
+    eps = get_eps()
+    for i, (r, c) in enumerate(zip(res_seq, correct_seq)):
+        res_f = parse_double(r)
+        ans_f = parse_double(c)
+        if abs(res_f - ans_f) > eps:
+            raise RuntimeError(f'Element #{i + 1} mismatch: {res_f} != {ans_f}, EPS={eps}')
 
 
 def ignore_spaces_checker(res: bytes, correct: bytes):
@@ -198,6 +218,7 @@ def res_checker(res: bytes, ans: Path, checker: str):
         'cmp': cmp_checker,
         'sorted-lines': sorted_lines_checker,
         'cmp-double': cmp_double_checker,
+        'cmp-double-seq': cmp_double_seq_checker,
         'ignore-spaces': ignore_spaces_checker,
         'ignore': ignore_checker
     }
@@ -237,19 +258,25 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
         env = {}
     if env_add:
         if meta.get('enable_subst', False):
-            env.update((key, val.replace('${problem.problem_dir}', problem_dir)) for key, val in env_add.items())
-        else:
-            env.update(env_add)
+            env_add = {
+                key: val.replace('${problem.problem_dir}', problem_dir) for key, val in env_add.items()
+            }
+        env.update(env_add)
     before_children_user = os.times().children_user
     interactor = interactor and Path(interactor).absolute()
     if '/' in str(checker):
         checker = Path(checker).absolute()
+    executable = full_cmd[0]
     popen_args: dict[str, Any] = {
         'stdin': subprocess.PIPE,
         'stdout': subprocess.PIPE,
         'start_new_session': True,  # Isolate process
         'env': env,
+        'executable': executable,
     }
+    full_cmd[0] = Path(executable).name
+    if meta.get('drop_first_param', False):
+        full_cmd = full_cmd[1:]
     if (proc_count := meta.get('max_process_count')) is not None and is_pipeline:
         m = int(cast(str, proc_count))
 
@@ -419,7 +446,7 @@ def parse_inf_file(f):
         else:
             raise RuntimeError(f"Unknown inf param {key} = {val}")
 
-    flags = {'enable_subst', 'check_stderr', 'nuke_environ'}
+    flags = {'enable_subst', 'check_stderr', 'nuke_environ', 'drop_first_param'}
 
     for line in f.readlines():
         line = line.strip()

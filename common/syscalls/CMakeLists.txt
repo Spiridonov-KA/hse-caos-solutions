@@ -8,4 +8,5 @@ file(GLOB_RECURSE ASM_SOURCES
 enable_language(ASM)
 
 add_library(syscalls STATIC ${CPP_SOURCES} ${ASM_SOURCES})
+target_compile_options(syscalls PRIVATE ${FREESTANDING_COMPILE_OPTIONS})
 target_include_directories(syscalls PUBLIC include)

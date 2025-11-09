@@ -5,6 +5,7 @@
 
 PCGRandom::PCGRandom(uint64_t seed, uint64_t inc)
     : state_{seed}, inc_{inc | 1} {
+    Warmup();
 }
 
 uint32_t PCGRandom::operator()() {

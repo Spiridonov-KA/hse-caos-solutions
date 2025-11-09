@@ -7,7 +7,7 @@
 // https://man7.org/linux/man-pages/man2/syscall.2.html
 // CC Args: RDI, RSI, RDX, RCX, R8, R9
 // CC Caller-saved: RAX, RCX, RDX, R8, R9, R10, R11
-// Linux CC Args: RDI, RSI, RDX, R10, R8, R9
+// Linux syscall CC Args: RDI, RSI, RDX, R10, R8, R9
 // Syscall no: RAX
 InternalSyscallImpl:
     mov rax, rdi

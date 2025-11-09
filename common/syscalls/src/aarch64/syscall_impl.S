@@ -5,7 +5,7 @@
 .align 16
 // https://man7.org/linux/man-pages/man2/syscall.2.html
 // CC Args: x0, x1, x2, x3, x4, x5, x6, x7
-// Linux CC Args: x0, x1, x2, x3, x4, x5
+// Linux syscall CC Args: x0, x1, x2, x3, x4, x5
 // Syscall no: w8
 InternalSyscallImpl:
     mov x8, x0

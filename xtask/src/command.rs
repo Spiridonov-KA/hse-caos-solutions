@@ -49,7 +49,7 @@ impl CommandBuilder {
     pub fn new(cmd_name: impl Into<OsString>) -> Self {
         let cmd_name = cmd_name.into();
 
-        const DEFAULT_RO_MOUNTS: [&str; 7] = [
+        const DEFAULT_RO_MOUNTS: [&str; 8] = [
             "/bin",
             "/etc",
             "/lib",
@@ -57,6 +57,7 @@ impl CommandBuilder {
             "/sbin",
             "/usr",
             "/dev/random",
+            "/dev/urandom",
         ];
         const DEFAULT_RW_MOUNTS: [&str; 1] = ["/dev/null"];
         const DEFAULT_SYM_MOUNTS: [&str; 4] = [
