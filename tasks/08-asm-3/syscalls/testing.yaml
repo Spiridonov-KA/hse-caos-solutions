@@ -1,0 +1,11 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_syscalls]
+    profiles: [asan, release]
+  - type: run-cmd
+    cmd: [build:test_syscalls_nostd]
+    profiles: [release]
+  - type: report-score
+    task: syscalls
+editable:
+  - syscalls.cpp

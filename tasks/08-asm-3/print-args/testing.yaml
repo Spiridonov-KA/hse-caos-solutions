@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    profiles: [release]
+    cmd: [python3, tool:nej-runner, --run-cmd, build:solution_print_args]
+  - type: report-score
+    task: print-args
+editable:
+  - src/*

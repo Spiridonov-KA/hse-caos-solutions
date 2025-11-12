@@ -147,6 +147,25 @@ deadlines:
         - task: pivot
           score: 150
 
+    - group: 08-asm-3
+      start: 2025-11-12 16:00
+      steps:
+        1.0: 2025-11-26 21:00
+        0.5: 2025-12-02 21:00
+      end: 2026-01-01 00:00
+      enabled: true
+      tasks:
+        - task: dynlib
+          score: 100
+        - task: indirect-call
+          score: 100
+        - task: syscalls
+          score: 100
+        - task: print-args
+          score: 100
+        - task: polish-compiler
+          score: 250
+
     - group: bonus
       start: 2025-10-25 19:00
       end: 2026-01-01 00:00
@@ -155,6 +174,9 @@ deadlines:
         - task: long-jump
           is_bonus: true
           score: 150
+        - task: polish-compiler-tracing
+          is_bonus: true
+          score: 250
 
 grades:
   grades:

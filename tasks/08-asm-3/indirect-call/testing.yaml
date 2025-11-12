@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_indirect_call]
+    profiles: [asan, debug]
+  - type: report-score
+    task: indirect-call
+editable:
+  - solution.S

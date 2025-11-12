@@ -503,9 +503,15 @@ def find_children(parent=os.getpid()) -> List[Tuple[int, List[str]]]:
     return children
 
 
+def file_digest(f):
+    if digest := getattr(hashlib, "file_digest", None):
+        return digest(f, "sha256").hexdigest()
+    return ""
+
+
 def calculate_checksum(file: Path) -> str:
     with open(file, 'rb') as f:
-        return hashlib.file_digest(f, "sha256").hexdigest()
+        return file_digest(f)
 
 
 parser = argparse.ArgumentParser()

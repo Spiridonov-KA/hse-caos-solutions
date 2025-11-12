@@ -1,0 +1,3 @@
+nuke_environ
+drop_first_param
+params = a b c

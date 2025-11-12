@@ -35,7 +35,7 @@ mov [rdi + rdx * 8 + 0x10], rax  # *(uint64_t*)(rdi + rdx * 8 + 0x10) = rax
 mov rax, [rdi - 0x60]            # rax = *(uint64_t*)(rdi - 0x60)
 ```
 
-## System V AMD64 ABI (Linux calling conventions)
+## System V AMD64 ABI
 
 Arguments: `rdi`, `rsi`, `rdx`, `rcx`, `r8`, `r9`
 
@@ -46,6 +46,14 @@ Caller-saved registers: `rax`, `rcx`, `rdx`, `rsi`, `rdi`, `r8`, `r9`, `r10`, `r
 Callee-saved registers: `rbx`, `rsp`, `rbp`, `r12`, `r13`, `r14`, `r15`
 
 Before `call`: `rsp % 16 == 0`
+
+## Linux x86_64 syscall calling conventions
+
+Arguments: `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9`
+
+Result: `rax`
+
+Clobbers: `rcx`, `r11`
 
 ## Size qualifiers
 
