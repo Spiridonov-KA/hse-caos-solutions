@@ -49,10 +49,10 @@ int main() {
     BODY(2, "main");
 }
 
-extern "C" int bar(int seed, bool print) {
+extern "C" __attribute__((noinline)) int bar(int seed, bool print) {
     BODY(3, "bar");
 }
 
-extern "C" int foo(int seed, bool print) {
+extern "C" __attribute__((noinline)) int foo(int seed, bool print) {
     BODY(5, "foo");
 }

@@ -4,6 +4,7 @@ tests:
     profiles:
       - debug
       - asan
+      - release
   - type: report-score
     task: backtrace
 editable:
