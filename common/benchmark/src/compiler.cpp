@@ -1,5 +1,7 @@
 #include <benchmark/compiler.hpp>
 
+#include <atomic>
+
 namespace detail {
 
 void DoNotOptimize(const void* ptr) {
@@ -9,5 +11,5 @@ void DoNotOptimize(const void* ptr) {
 }  // namespace detail
 
 void DoNotReorder() {
-    asm volatile("" ::: "memory");
+    std::atomic_signal_fence(std::memory_order_seq_cst);
 }

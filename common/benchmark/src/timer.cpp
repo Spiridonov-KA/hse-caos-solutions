@@ -1,5 +1,7 @@
 #include <benchmark/timer.hpp>
 
+#include <benchmark/compiler.hpp>
+
 #include <cstring>
 #include <iostream>
 #include <sys/resource.h>
@@ -23,12 +25,14 @@ std::chrono::microseconds ToDuration(timeval d) {
 
 CPUTimer::Times GetTimes(CPUTimer::Type type) {
     rusage usage;
+    DoNotReorder();
     if (::getrusage(ToRusageType(type), &usage) < 0) {
         int err = errno;
         std::cerr << "Failed to get resource usage: " << strerror(err)
                   << std::endl;
         std::abort();
     }
+    DoNotReorder();
     return CPUTimer::Times{
         .wall_time = CPUTimer::WallClock::now().time_since_epoch(),
         .cpu_utime = ToDuration(usage.ru_utime),
