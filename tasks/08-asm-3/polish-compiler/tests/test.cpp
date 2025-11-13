@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <random>
 
+using namespace std::chrono_literals;
+
 TEST_CASE("Simple") {
     WrappedPolishCompiler compiler;
     {
@@ -282,4 +284,21 @@ TEST_CASE("Performance") {
         INFO("Too slow");
         CHECK(ratio > 8);
     }
+}
+
+TEST_CASE("CompilationPerformance") {
+    if constexpr (kBuildType != BuildType::Release) {
+        return;
+    }
+    WrappedPolishCompiler compiler;
+
+    CPUTimer t;
+
+    for (uint32_t i = 0; i < 2048; ++i) {
+        auto f = compiler.Compile<2>({{Push{i}, add, add}});
+        REQUIRE(f(5, 6) == 5 + 6 + i);
+    }
+
+    auto times = t.GetTimes();
+    REQUIRE(times.wall_time < 150ms);
 }

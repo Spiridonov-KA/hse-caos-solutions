@@ -8,6 +8,8 @@ tests:
   - type: forbidden-patterns
     token:
       - <functional>
+      - dlopen
+      - dlclose
   - type: report-score
     task: polish-compiler
   - type: run-cmd
