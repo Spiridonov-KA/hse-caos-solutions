@@ -21,7 +21,7 @@ TEST_CASE("Pipe") {
     constexpr size_t kBufSize = 4096;
     char buf[kBufSize];
     std::generate(buf, buf + kBufSize, [&rng]() { return rng(); });
-    CheckSum original;
+    OrderedCheckSum original;
     original.Append(buf);
 
     {
@@ -34,7 +34,7 @@ TEST_CASE("Pipe") {
         auto ret = Read(fds[0], buf2, kBufSize);
         CHECK(ret == kBufSize);
     }
-    CheckSum read;
+    OrderedCheckSum read;
     read.Append(buf2);
     CHECK(original.GetDigest() == read.GetDigest());
 
@@ -52,7 +52,7 @@ TEST_CASE("Open") {
     constexpr size_t kBufSize = 4096;
     char buf[kBufSize];
     std::generate(buf, buf + kBufSize, [&rng]() { return rng(); });
-    CheckSum original;
+    OrderedCheckSum original;
     original.Append(buf);
 
     {
@@ -70,7 +70,7 @@ TEST_CASE("Open") {
         CHECK(read == kBufSize);
     }
 
-    CheckSum read;
+    OrderedCheckSum read;
     read.Append(buf2);
     CHECK(original.GetDigest() == read.GetDigest());
 
@@ -85,7 +85,7 @@ TEST_CASE("MMap") {
     constexpr size_t kBufSize = 4096;
     char buf[kBufSize];
 
-    CheckSum original;
+    OrderedCheckSum original;
     for (size_t i = 0; i < 4; ++i) {
         original.Reset();
         std::generate(buf, buf + kBufSize, [&rng]() { return rng(); });
@@ -102,7 +102,7 @@ TEST_CASE("MMap") {
         MMap(nullptr, kBufSize, PROT_READ, MAP_PRIVATE, fd, 3 * kBufSize);
     REQUIRE(reinterpret_cast<uint64_t>(ptr) <= static_cast<uint64_t>(-4096));
     char* mem = reinterpret_cast<char*>(ptr);
-    CheckSum mapped;
+    OrderedCheckSum mapped;
     mapped.Append(std::span{mem, mem + kBufSize});
     CHECK(original.GetDigest() == mapped.GetDigest());
 
