@@ -4,6 +4,8 @@ tests:
     profiles:
       - debug
       - release
+  - type: report-score
+    task: coro
 editable:
   - src/*
 playground: play_coro
