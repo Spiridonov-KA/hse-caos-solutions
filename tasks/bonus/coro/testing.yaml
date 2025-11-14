@@ -1,0 +1,9 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_coro]
+    profiles:
+      - debug
+      - release
+editable:
+  - src/*
+playground: play_coro
