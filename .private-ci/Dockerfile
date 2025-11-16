@@ -21,5 +21,3 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Just in case
 RUN update-alternatives --install /usr/bin/cc cc $(which gcc) 30
 RUN update-alternatives --install /usr/bin/c++ c++ $(which g++) 30
-
-RUN rustup component add clippy rustfmt
