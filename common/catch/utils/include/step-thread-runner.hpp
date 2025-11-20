@@ -5,7 +5,7 @@
 
 #include <atomic>
 
-struct StepThreadRunner : protected ThreadRunner {
+struct StepThreadRunner : private ThreadRunner {
     using ThreadRunner::Join;
     using ThreadRunner::RunningWorkers;
     using ThreadRunner::TotalWorkers;
