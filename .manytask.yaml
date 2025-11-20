@@ -166,6 +166,25 @@ deadlines:
         - task: polish-compiler
           score: 250
 
+    - group: 09-fp-thr
+      start: 2025-11-20 15:00
+      steps:
+        1.0: 2025-11-27 21:00
+        0.5: 2025-12-04 21:00
+      end: 2026-01-01 00:00
+      enabled: true
+      tasks:
+        - task: mul8
+          score: 100
+        - task: atomic
+          score: 100
+        - task: philosophers
+          score: 100
+        - task: contract
+          score: 100
+        - task: queue
+          score: 100
+
     - group: bonus
       start: 2025-10-25 19:00
       end: 2026-01-01 00:00
@@ -181,6 +200,9 @@ deadlines:
         - task: coro
           is_bonus: true
           score: 250
+        - task: interval
+          is_bonus: true
+          score: 100
 
 grades:
   grades:

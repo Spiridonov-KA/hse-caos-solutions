@@ -1,0 +1,2 @@
+add_catch_executable(test_philosophers test.cpp table.cpp)
+target_link_libraries(test_philosophers PRIVATE caos_utils benchmark)

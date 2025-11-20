@@ -1,0 +1,31 @@
+# Contract
+
+Реализуйте пару `Future`/`Promise` – односторонний контракт. Функция `CreateContract<T>`
+создает пару `Future<T>`, `Promise<T>`, где `Future<T>` – представление будущего значения
+типа `T`, а `Promise<T>` – "обещание" предоставить значение типа `T`.
+
+Метод `Future::Get` должен заблокировать текущий поток до тех пор, пока в соответствующий
+`Promise` не будет предоставлено значение с помощью `Promise::Set`.
+
+Гарантируется, что каждый `Future` и каждый `Promise` будет использован
+[ровно один раз](https://austral-lang.org/linear-types). Чтобы выразить это,
+заставим пользователя помечать каждое использование `Future` или `Promise` с помощью
+`std::move`:
+
+```cpp
+auto [f, p] = CreateContract<int>();
+std::move(p).Set(1);
+std::move(f).Get();
+```
+
+Не используйте активное ожидание и не используйте
+[`std::future`](https://cppreference.com/w/cpp/thread/future.html).
+Постарайтесь не использовать `std::shared_ptr`. Постарайтесь уменьшить размер
+критической секции в методе `Set`.
+
+<details>
+<summary>Подсказка</summary>
+
+Используйте динамически-аллоцированный `SharedState`, общий на пару
+`Future`/`Promise`.
+</details>

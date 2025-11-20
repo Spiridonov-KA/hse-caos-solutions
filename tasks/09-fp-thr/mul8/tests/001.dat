@@ -1,0 +1,56 @@
+1.23
+4.56
+0x1.fffffep+124  // FLT_MAX / 8.0
+0x1.fffffcp+124  // a bit less (pun intended)
+0x1.6bdab6p+124  // Just some large number with exp
+0x1p+124  // with zero mantissa
+// Just some numbers
+3.48258975089e+13
+2.56659790234e+12
+5.21341351231e-26
+1.86413123546e-32
+0x1p-126  // FLT_MIN
+0x1.6a223ap-126  // random small number
+0x1.fffffep-126  // With full mantissa
+
+// Same but negative
+-1.23
+-4.56
+-0x1.fffffep+124
+-0x1.fffffcp+124
+-0x1.6bdab6p+124
+-0x1p+124
+
+-3.48258975089e+13
+-2.56659790234e+12
+-5.21341351231e-26
+-1.86413123546e-32
+-0x1p-126
+-0x1.6a223ap-126
+-0x1.fffffep-126
+
+// Special values
+NaN
+inf
+-inf
+
+// Overflow
+0x1p+125
+0x1p+126
+0x1p+127
+0x1.a8491p+125
+0x1.a8491p+126
+0x1.a8491p+127
+0x1.fffffep+125
+0x1.fffffep+126
+0x1.fffffep+127
+
+-0x1p+125
+-0x1p+126
+-0x1p+127
+-0x1.a8491p+125
+-0x1.a8491p+126
+-0x1.a8491p+127
+-0x1.fffffep+125
+-0x1.fffffep+126
+-0x1.fffffep+127

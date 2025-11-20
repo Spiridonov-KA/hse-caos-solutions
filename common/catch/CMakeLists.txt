@@ -6,6 +6,10 @@ FetchContent_Declare(
     GIT_TAG v3.8.1
 )
 
+if(CMAKE_BUILD_TYPE STREQUAL "Tsan")
+    set(CATCH_CONFIG_NO_POSIX_SIGNALS ON CACHE BOOL "" FORCE)
+endif()
+
 FetchContent_MakeAvailable(Catch2)
 
 add_library(ut_main OBJECT ut_main.cpp)

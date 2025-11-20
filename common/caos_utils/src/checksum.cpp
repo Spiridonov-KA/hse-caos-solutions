@@ -41,3 +41,7 @@ uint64_t UnorderedCheckSum::GetDigest() const {
 void UnorderedCheckSum::Append(uint64_t v) {
     digest_ += Hash(v);
 }
+
+void UnorderedCheckSum::Merge(const UnorderedCheckSum& other) {
+    digest_ += other.digest_;
+}

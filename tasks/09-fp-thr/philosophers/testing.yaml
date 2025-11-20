@@ -1,0 +1,14 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_philosophers]
+    profiles: [tsan, release]
+  - type: forbidden-patterns
+    token:
+      - std::lock
+      - std::scoped_lock
+    substring:
+      - try_lock
+  - type: report-score
+    task: philosophers
+editable:
+  - table.cpp

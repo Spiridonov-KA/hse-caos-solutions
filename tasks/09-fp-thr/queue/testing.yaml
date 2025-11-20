@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_queue]
+    profiles: [tsan, asan, release]
+  - type: report-score
+    task: queue
+editable:
+  - queue.hpp

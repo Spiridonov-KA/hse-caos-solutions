@@ -19,6 +19,7 @@ struct OrderedCheckSum {
 struct UnorderedCheckSum {
     uint64_t GetDigest() const;
     void Append(uint64_t v);
+    void Merge(const UnorderedCheckSum& other);
 
   private:
     uint64_t digest_ = 0;

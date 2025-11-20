@@ -72,6 +72,9 @@ pub struct RunCmd {
     #[serde(default = "default_true")]
     pub echo: bool,
 
+    #[serde(default = "default_true")]
+    pub isolate: bool,
+
     #[serde(default)]
     pub extra_env: HashMap<String, String>,
 

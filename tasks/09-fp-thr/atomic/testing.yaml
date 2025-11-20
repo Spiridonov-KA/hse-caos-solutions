@@ -1,0 +1,9 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_atomic]
+    profiles:
+      - release
+  - type: report-score
+    task: atomic
+editable:
+  - atomic.S

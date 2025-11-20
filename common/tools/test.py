@@ -157,7 +157,7 @@ def sorted_lines_checker(res: bytes, correct: bytes):
 
 def parse_double(data: bytes) -> float:
     res = data.decode().strip()
-    if res.startswith('0x'):
+    if res.removeprefix('-').startswith('0x'):
         return float.fromhex(res)
     return float(res)
 
@@ -441,6 +441,8 @@ def parse_inf_file(f):
             res[key] = val
         elif key == 'max_process_count':
             res[key] = val
+        elif key == 'max_open_file_count':
+            pass  # TODO?
         elif key == 'max_vm_size' or key == 'max_rss_size':
             pass  # ignore
         else:

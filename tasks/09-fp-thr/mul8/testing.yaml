@@ -1,0 +1,13 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, cmp-double-seq, --run-cmd, build:solution_mul8]
+    env:
+      ENV: 0
+    profiles: [asan, release]
+  - type: forbidden-patterns
+    token:
+      - asm
+  - type: report-score
+    task: mul8
+editable:
+  - mul8.cpp

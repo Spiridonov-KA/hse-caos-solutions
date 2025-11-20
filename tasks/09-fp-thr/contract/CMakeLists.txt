@@ -1,0 +1,2 @@
+add_catch_executable(test_contract test.cpp)
+target_link_libraries(test_contract PRIVATE caos_utils)

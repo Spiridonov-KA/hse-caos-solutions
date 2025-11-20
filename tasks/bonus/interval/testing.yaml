@@ -1,0 +1,8 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_interval]
+    profiles: [debug, release]
+  - type: report-score
+    task: interval
+editable:
+  - interval.hpp

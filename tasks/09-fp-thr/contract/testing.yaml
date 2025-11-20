@@ -1,0 +1,14 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_contract]
+    profiles: [tsan, asan, release]
+  - type: forbidden-patterns
+    token:
+      - std::future
+      - std::promise
+    substring:
+      - sleep
+  - type: report-score
+    task: contract
+editable:
+  - contract.hpp

@@ -5,6 +5,7 @@ use std::{
     fs, iter,
     path::{Path, PathBuf},
     rc::Rc,
+    time::{Duration, Instant},
 };
 
 use crate::{
@@ -73,11 +74,14 @@ struct RepoConfig {
     tester_token: Option<String>,
     manytask_course_name: String,
     default_limits: CommandLimits,
+    disable_fmt_check: bool,
 }
 
 impl RepoConfig {
     fn new(repo_root: Rc<Path>) -> Self {
         let course_name = std::env::var("MT_COURSE_NAME").unwrap_or("hse-caos-2025".to_string());
+        let disable_fmt_check = std::env::var("DISABLE_FMT_CHECK")
+            .is_ok_and(|s| s == "1" || s == "On" || s == "ON" || s == "YES");
         Self {
             tools: HashMap::from_iter([
                 ("nej-runner", "common/tools/test.py"),
@@ -93,6 +97,7 @@ impl RepoConfig {
                 wall_time_sec: Some(10),
                 cpu_ms_per_sec: Some(3000),
             },
+            disable_fmt_check,
         }
     }
 
@@ -249,7 +254,7 @@ impl TestContext {
 
         let bin = args.first().context("no cmd was given")?;
 
-        let cmd = {
+        let limits = {
             let mut limits = self.repo_config.default_limits.update_with(cfg.limits);
             let memory_multiplier = match profile {
                 // https://clang.llvm.org/docs/AddressSanitizer.html#limitations
@@ -264,19 +269,41 @@ impl TestContext {
                 );
                 limits.memory_mb = limits.memory_mb.map(|m| m * memory_multiplier);
             }
-
-            CommandBuilder::new(bin)
-                .args(&args[1..])
-                // TODO: Move to config
-                .inherit_envs(TaskContext::INHERIT_VARS)
-                .with_envs(cfg.extra_env.iter())
-                .with_limits(limits)
-                .with_ro_mount(&*self.repo_root)
-                .with_rw_mount(self.task_context.full_path())
-                .with_cwd(self.task_context.full_path())
+            limits
         };
 
-        self.cmd_runner.status(&cmd)?.exit_ok()?;
+        let cmd = CommandBuilder::new(bin)
+            .args(&args[1..])
+            // TODO: Move to config
+            .inherit_envs(TaskContext::INHERIT_VARS)
+            .with_envs(cfg.extra_env.iter())
+            .with_limits(limits)
+            .with_ro_mount(&*self.repo_root)
+            .with_rw_mount(self.task_context.full_path())
+            .with_cwd(self.task_context.full_path());
+
+        let start = Instant::now();
+        let status = if cfg.isolate {
+            self.cmd_runner.status(&cmd)
+        } else {
+            NativeCommandRunner.status(&cmd)
+        }?;
+
+        match status.exit_ok() {
+            Ok(()) => {}
+            Err(e) => {
+                let elapsed = start.elapsed();
+                if let Some(wtl) = limits.wall_time_sec
+                    && elapsed >= Duration::from_secs(wtl as u64) - Duration::from_millis(100)
+                {
+                    Err(e).context(format!(
+                        "execution time was {elapsed:?}, likely time limit exceeded"
+                    ))?
+                } else {
+                    Err(e)?
+                }
+            }
+        };
 
         Ok(())
     }
@@ -313,9 +340,13 @@ impl TestContext {
             return Ok(());
         };
 
-        const COMMIT_TS_VAR: &str = "CI_PIPELINE_CREATED_AT";
-        let commit_time =
-            std::env::var(COMMIT_TS_VAR).with_context(|| format!("no {COMMIT_TS_VAR} variable"))?;
+        const SUBMIT_TS_VAR: &str = "CI_PIPELINE_CREATED_AT";
+        const SUBMIT_TS_OVERRIDE: &str = "SUBMIT_TS";
+        let commit_time = std::env::var(SUBMIT_TS_OVERRIDE)
+            .or_else(|_| std::env::var(SUBMIT_TS_VAR))
+            .with_context(|| {
+                format!("neither {SUBMIT_TS_OVERRIDE} nor {SUBMIT_TS_VAR} variable was specified")
+            })?;
         let commit_ts = DateTime::parse_from_rfc3339(&commit_time)
             .with_context(|| format!("failed to parse {commit_time}"))?;
 
@@ -461,6 +492,10 @@ impl TestContext {
     fn check_format(&self) -> Result<()> {
         if self.args.build_only {
             info!("Running in build-only mode. Formatting wouldn't be checked");
+            return Ok(());
+        }
+        if self.repo_config.disable_fmt_check {
+            info!("Not checking formatting");
             return Ok(());
         }
         let solution_files = self.task_context.find_editable_files()?;
