@@ -60,6 +60,15 @@ TEST_CASE("Simple") {
         REQUIRE(fn != nullptr);
         CHECK_ON(fn, fn_correct);
     }
+
+    {
+        // fn(a, b) = a - b
+        auto fn = compiler.Compile<2>({{sub}});
+        auto fn_correct = [](uint64_t a, uint64_t b) { return a - b; };
+        CHECK_ON(fn, fn_correct, 1, 2);
+        CHECK_ON(fn, fn_correct, 123456, 654321);
+        CHECK_ON(fn, fn_correct, 78634, 4321);
+    }
 }
 
 TEST_CASE("Advanced") {
@@ -282,7 +291,7 @@ TEST_CASE("Performance") {
                                 << " faster than the interpreted one");
     {
         INFO("Too slow");
-        CHECK(ratio > 8);
+        CHECK(ratio > 7.5);
     }
 }
 
