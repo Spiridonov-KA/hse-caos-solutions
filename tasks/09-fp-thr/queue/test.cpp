@@ -39,23 +39,21 @@ TEST_CASE("SingleThread") {
 
 TEST_CASE("DeadlockPop") {
     Queue<int> q;
-    StepThreadRunner r;
+    StepThreadRunner r{400ms};
 
     std::atomic<bool> had_nullopt{false};
 
     for (size_t i = 0; i < 3; ++i) {
-        r.Add(
-            [&q, &had_nullopt]() {
-                auto v = q.Pop();
-                if (!v) {
-                    had_nullopt.store(true);
-                }
-            },
-            400ms);
+        r.Add([&q, &had_nullopt]() {
+            auto v = q.Pop();
+            if (!v) {
+                had_nullopt.store(true);
+            }
+        });
     }
 
     for (size_t i = 0; i < 3; ++i) {
-        r.Add([&q]() { q.Push(123); }, 400ms);
+        r.Add([&q]() { q.Push(123); });
     }
 
     while (r.DoStep()) {
@@ -66,22 +64,20 @@ TEST_CASE("DeadlockPop") {
 
 TEST_CASE("DeadlockClose") {
     Queue<int>* q;
-    StepThreadRunner r;
+    StepThreadRunner r{400ms};
 
     std::atomic<bool> had_value{false};
 
     for (size_t i = 0; i < 3; ++i) {
-        r.Add(
-            [&q, &had_value]() {
-                auto v = q->Pop();
-                if (v) {
-                    had_value.store(true);
-                }
-            },
-            400ms);
+        r.Add([&q, &had_value]() {
+            auto v = q->Pop();
+            if (v) {
+                had_value.store(true);
+            }
+        });
     }
 
-    r.Add([&q]() { q->Close(); }, 400ms);
+    r.Add([&q]() { q->Close(); });
 
     while (true) {
         Queue<int> queue;

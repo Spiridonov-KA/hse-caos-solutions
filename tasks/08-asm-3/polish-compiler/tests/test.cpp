@@ -25,7 +25,9 @@ TEST_CASE("Simple") {
         }});
         REQUIRE(fn != nullptr);
 
-        auto fn_correct = [](uint64_t a, uint64_t b) { return a * (b + 3); };
+        auto fn_correct = [](uint64_t a, uint64_t b) {
+            return a * (b + 3);
+        };
         CHECK_ON(fn, fn_correct, 1, 2);
         CHECK_ON(fn, fn_correct, 1, 2);
         CHECK_ON(fn, fn_correct, 7, 10);
@@ -46,8 +48,9 @@ TEST_CASE("Simple") {
         }});
         REQUIRE(fn != nullptr);
         auto fn_correct = [](uint64_t a, uint64_t b, uint64_t c, uint64_t d,
-                             uint64_t e,
-                             uint64_t f) { return a + b + c + d + e + f; };
+                             uint64_t e, uint64_t f) {
+            return a + b + c + d + e + f;
+        };
         CHECK_ON(fn, fn_correct, 0, 0, 100, 200, 4000, 137869691762391);
         CHECK_ON(fn, fn_correct, 1ull << 60, 1ull << 61, 1ull << 62, 1ull << 62,
                  1ull << 62, 1ull << 62);
@@ -56,7 +59,9 @@ TEST_CASE("Simple") {
     {
         // fn() = 1
         auto fn = compiler.Compile<0>({{Push{1}}});
-        auto fn_correct = []() -> uint64_t { return 1; };
+        auto fn_correct = []() -> uint64_t {
+            return 1;
+        };
         REQUIRE(fn != nullptr);
         CHECK_ON(fn, fn_correct);
     }
@@ -64,7 +69,9 @@ TEST_CASE("Simple") {
     {
         // fn(a, b) = a - b
         auto fn = compiler.Compile<2>({{sub}});
-        auto fn_correct = [](uint64_t a, uint64_t b) { return a - b; };
+        auto fn_correct = [](uint64_t a, uint64_t b) {
+            return a - b;
+        };
         CHECK_ON(fn, fn_correct, 1, 2);
         CHECK_ON(fn, fn_correct, 123456, 654321);
         CHECK_ON(fn, fn_correct, 78634, 4321);
@@ -133,7 +140,9 @@ TEST_CASE("Advanced") {
             Push{1993253540},
             add,
         }});
-        auto fn_correct = [](uint64_t a) { return a + 1993253540; };
+        auto fn_correct = [](uint64_t a) {
+            return a + 1993253540;
+        };
 
         REQUIRE(fn != nullptr);
         CHECK_ON(fn, fn_correct, 0);
@@ -154,7 +163,9 @@ TEST_CASE("Advanced") {
             add,
             add,
         }});
-        auto fn_correct = [](uint64_t a) { return a + 5818650909575623225ull; };
+        auto fn_correct = [](uint64_t a) {
+            return a + 5818650909575623225ull;
+        };
 
         REQUIRE(fn != nullptr);
         CHECK_ON(fn, fn_correct, 13474150119330595010ull);
@@ -232,7 +243,9 @@ TEST_CASE("Performance") {
     }
 
     PCGRandom rng{Catch::getSeed()};
-    auto gen_31_bit = [&rng] { return rng.Generate32() >> 1; };
+    auto gen_31_bit = [&rng] {
+        return rng.Generate32() >> 1;
+    };
 
     auto program = [&] {
         std::discrete_distribution<size_t> d{20, 30, 25, 35};

@@ -141,26 +141,22 @@ TEST_CASE("StoreBuffering") {
     AtomicU64 a;
     AtomicU64 b;
 
-    StepThreadRunner t;
+    StepThreadRunner t{500ms};
 
     AtomicU64 r1;
     AtomicU64 r2;
 
-    t.Add(
-        [&]() {
-            // SB test
-            a.Store(1);
-            r1.Store(b.Load());
-        },
-        500ms);
+    t.Add([&]() {
+        // SB test
+        a.Store(1);
+        r1.Store(b.Load());
+    });
 
-    t.Add(
-        [&]() {
-            // SB test
-            b.Store(1);
-            r2.Store(a.Load());
-        },
-        500ms);
+    t.Add([&]() {
+        // SB test
+        b.Store(1);
+        r2.Store(a.Load());
+    });
 
     bool finish = false;
     while (!finish) {

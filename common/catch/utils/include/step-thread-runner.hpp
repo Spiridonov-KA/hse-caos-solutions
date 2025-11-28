@@ -10,8 +10,11 @@ struct StepThreadRunner : private ThreadRunner {
     using ThreadRunner::RunningWorkers;
     using ThreadRunner::TotalWorkers;
 
+    StepThreadRunner(Duration d) : duration_(d) {
+    }
+
     template <class F>
-    void Add(F&& f, Duration d) {
+    void Add(F&& f) {
         ThreadRunner::Run(
             [this, f = std::move(f)](auto should_run) {
                 this->RunSteps(f, should_run);
@@ -19,7 +22,7 @@ struct StepThreadRunner : private ThreadRunner {
                     Backoff();
                 }
             },
-            d);
+            duration_);
     }
 
     bool DoStep() {
@@ -74,6 +77,7 @@ struct StepThreadRunner : private ThreadRunner {
     static constexpr uint64_t kDefaultLastStep =
         std::numeric_limits<uint64_t>::max();
 
+    Duration duration_{};
     std::atomic<uint64_t> step_{0};
     std::atomic<uint64_t> step_finishes_{0};
     std::atomic<uint64_t> last_step_{kDefaultLastStep};

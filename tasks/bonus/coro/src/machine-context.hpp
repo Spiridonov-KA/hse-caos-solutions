@@ -16,5 +16,9 @@ extern "C" void SetupMachineContext(MachineContext* ctx, void* stack_top,
 inline void SetupMachineContext(MachineContext* ctx, void* stack_top,
                                 IRunnable* runnable) {
     SetupMachineContext(
-        ctx, stack_top, [](void* raw) { ((IRunnable*)raw)->Run(); }, runnable);
+        ctx, stack_top,
+        [](void* raw) {
+            ((IRunnable*)raw)->Run();
+        },
+        runnable);
 }

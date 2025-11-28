@@ -34,23 +34,19 @@ TEST_CASE("Movable") {
 TEST_CASE("MultiThreaded") {
     PCGRandom rng{Catch::getSeed()};
 
-    StepThreadRunner r;
+    StepThreadRunner r{500ms};
     auto [f, p] = CreateContract<uint64_t>();
     uint64_t value;
-    r.Add(
-        [&rng, &value, &p] {
-            value = rng.Generate64();
-            auto p_local = std::move(p);
-            std::move(p_local).Set(value);
-        },
-        500ms);
-    r.Add(
-        [&value, &f] {
-            auto f_local = std::move(f);
-            auto v = std::move(f_local).Get();
-            CHECK(v == value);
-        },
-        500ms);
+    r.Add([&rng, &value, &p] {
+        value = rng.Generate64();
+        auto p_local = std::move(p);
+        std::move(p_local).Set(value);
+    });
+    r.Add([&value, &f] {
+        auto f_local = std::move(f);
+        auto v = std::move(f_local).Get();
+        CHECK(v == value);
+    });
     while (r.DoStep()) {
         std::tie(f, p) = CreateContract<uint64_t>();
     }

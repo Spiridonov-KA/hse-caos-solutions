@@ -7,6 +7,8 @@ IndentGotoLabels: false
 SeparateDefinitionBlocks: Always
 DerivePointerAlignment: false
 PointerAlignment: Left
+AllowShortLambdasOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
 # Currently named as BreakTemplateDeclarations
 AlwaysBreakTemplateDeclarations: true
 # Работает начиная с clang-format-15. Закомментируйте эту строку, если используете более старую версию.
