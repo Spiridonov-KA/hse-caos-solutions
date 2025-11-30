@@ -53,7 +53,9 @@ TEST_CASE("DeadlockPop") {
     }
 
     for (size_t i = 0; i < 3; ++i) {
-        r.Add([&q]() { q.Push(123); });
+        r.Add([&q]() {
+            q.Push(123);
+        });
     }
 
     while (r.DoStep()) {
@@ -77,7 +79,9 @@ TEST_CASE("DeadlockClose") {
         });
     }
 
-    r.Add([&q]() { q->Close(); });
+    r.Add([&q]() {
+        q->Close();
+    });
 
     while (true) {
         Queue<int> queue;
