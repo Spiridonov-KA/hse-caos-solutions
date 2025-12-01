@@ -95,6 +95,7 @@ impl ClangFmtRunner {
         cmd = cmd
             .args(files.into_iter().map(|f| f.as_ref()))
             .inherit_env("PATH")
+            .inherit_env("HOME")
             .with_rw_mount(&*self.repo_root)
             .with_tmpfs_mount("/dev/shm");
         runner
