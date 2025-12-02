@@ -1,8 +1,8 @@
 tests:
   - type: run-cmd
     cmd: [python3, tool:nej-runner, --checker, cmp-double-seq, --run-cmd, build:solution_dynlib]
-    env:
-      EPS: 1e-8
+    extra_env:
+      EPS: "1e-8"
     profiles: [asan, release]
   - type: report-score
     task: dynlib
