@@ -1,0 +1,3 @@
+add_catch_executable(test_rw_lock tests/basic_test.cpp)
+target_link_libraries(test_rw_lock PRIVATE benchmark)
+add_catch_executable(test_rw_lock_starvation tests/starvation_test.cpp)

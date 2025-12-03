@@ -1,0 +1,3 @@
+enable_language(ASM)
+add_catch_executable(test_thread_local_alloc test.cpp storage.cpp)
+target_link_libraries(test_thread_local_alloc PRIVATE caos_utils benchmark)

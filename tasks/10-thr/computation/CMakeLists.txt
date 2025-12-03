@@ -1,0 +1,4 @@
+add_library(computation_counter SHARED counter.cpp)
+
+add_caos_executable(solution_computation solution.cpp)
+target_link_libraries(solution_computation PRIVATE computation_counter)

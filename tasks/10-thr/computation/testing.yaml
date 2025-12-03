@@ -1,0 +1,12 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, sorted-lines, --run-cmd, build:solution_computation]
+    profiles:
+      - release
+  - type: forbidden-patterns
+    substring:
+      - syncstream
+  - type: report-score
+    task: computation
+editable:
+  - solution.cpp

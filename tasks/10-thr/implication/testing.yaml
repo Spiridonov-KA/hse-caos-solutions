@@ -1,0 +1,13 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_implication]
+    profiles:
+      - tsan
+      - asan
+      - release
+    limits:
+      wall_time_sec: 20
+  - type: report-score
+    task: implication
+editable:
+  - implication.cpp

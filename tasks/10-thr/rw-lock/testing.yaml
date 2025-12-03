@@ -1,0 +1,29 @@
+tests:
+  - type: forbidden-patterns
+    token:
+      - <mutex>
+      - <condition_variable>
+      - pthread_mutex_lock
+      - pthread_cond_wait
+      - shared_mutex
+    hint: "Use bare futex"
+  - type: run-cmd
+    cmd: [build:test_rw_lock]
+    profiles:
+      - tsan
+      - release
+    limits:
+      procs: 17
+  - type: report-score
+    task: rw-lock
+  - type: run-cmd
+    cmd: [build:test_rw_lock_starvation]
+    profiles:
+      - tsan
+      - release
+    limits:
+      procs: 17
+  - type: report-score
+    task: rw-lock-starvation
+editable:
+  - rw-lock.hpp

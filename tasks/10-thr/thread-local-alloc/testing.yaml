@@ -1,0 +1,14 @@
+tests:
+  - type: run-cmd
+    cmd: [build:test_thread_local_alloc]
+    profiles:
+      - tsan
+      - asan
+      - release
+    limits:
+      procs: 20
+  - type: report-score
+    task: thread-local-alloc
+editable:
+  - storage.hpp
+  - storage.cpp
