@@ -12,6 +12,7 @@ use tracing::debug;
 use which::which;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, Copy)]
+#[serde(deny_unknown_fields)]
 pub struct CommandLimits {
     pub procs: Option<usize>,
     pub memory_mb: Option<usize>,

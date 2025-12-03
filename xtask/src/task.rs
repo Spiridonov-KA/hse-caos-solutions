@@ -22,7 +22,7 @@ use crate::{
 const TESTING_CONFIG_FILENAME: &str = "testing.yaml";
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, EnumIter, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all = "lowercase", deny_unknown_fields)]
 pub enum BuildProfile {
     Release,
     Debug,
@@ -63,6 +63,7 @@ const fn default_true() -> bool {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct RunCmd {
     #[serde(default = "default_build_profiles")]
     pub profiles: Vec<BuildProfile>,
@@ -83,6 +84,7 @@ pub struct RunCmd {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct ForbiddenPatternsGroup {
     #[serde(default)]
     pub(crate) substring: Vec<String>,
@@ -105,6 +107,7 @@ impl ForbiddenPatternsGroup {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct ForbiddenPatterns {
     #[serde(default)]
     pub(crate) groups: Vec<ForbiddenPatternsGroup>,
@@ -123,12 +126,13 @@ impl ForbiddenPatterns {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ReportScore {
     pub task: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "kebab-case")]
+#[serde(tag = "type", rename_all = "kebab-case", deny_unknown_fields)]
 pub enum TestStep {
     ForbiddenPatterns(ForbiddenPatterns),
     RunCmd(RunCmd),
@@ -136,6 +140,7 @@ pub enum TestStep {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TestConfig {
     pub tests: Vec<TestStep>,
     pub editable: Vec<String>,
@@ -152,7 +157,7 @@ pub(crate) struct TaskContext {
 }
 
 impl TaskContext {
-    pub const INHERIT_VARS: [&str; 4] = ["PATH", "USER", "HOME", "TERM"];
+    pub const INHERIT_VARS: [&str; 5] = ["PATH", "USER", "HOME", "TERM", "CI"];
     pub const BUILD_TMPFS_SIZE: usize = 1 << 30; // 1 GiB
 
     pub(crate) fn new_with_config(

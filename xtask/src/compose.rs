@@ -239,6 +239,7 @@ fn process_source(src: String) -> Result<ProcessedSource> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 struct ExportList {
     export: Vec<PathBuf>,
 }

@@ -263,6 +263,7 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
             }
         env.update(env_add)
     before_children_user = os.times().children_user
+    before_children_real = time.time()
     interactor = interactor and Path(interactor).absolute()
     if '/' in str(checker):
         checker = Path(checker).absolute()
@@ -379,12 +380,23 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
     if current_ans_checksum != ans_checksum:
         raise RuntimeError("Test output tampering detected")
     after_children_user = os.times().children_user
-    real_time_limit = meta.get('time_limit', float(os.environ.get('EJUDGE_REAL_TIME_LIMIT_MS', 1.)))
-    if after_children_user - before_children_user > real_time_limit:
+    after_children_real = time.time()
+
+    user_time_limit = meta.get('time_limit', float(os.environ.get('EJUDGE_REAL_TIME_LIMIT_MS', 1.)))
+    real_time_limit = meta.get('real_time_limit', None)
+
+    if after_children_user - before_children_user > user_time_limit:
         if is_pipeline:
-            raise RuntimeError(f'Time limit exceed: {after_children_user - before_children_user} > {real_time_limit} secs')
+            raise RuntimeError(f'Time limit exceed: {after_children_user - before_children_user} > {user_time_limit} secs')
         else:
-            print('ERROR:', f'Time limit exceed: {after_children_user - before_children_user} > {real_time_limit} secs')
+            print(f'ERROR: Time limit exceed: {after_children_user - before_children_user} > {user_time_limit} secs')
+
+    if real_time_limit:
+        if after_children_real - before_children_real > real_time_limit:
+            if is_pipeline:
+                raise RuntimeError(f'Time limit exceed: {after_children_real - before_children_real} > {real_time_limit} secs')
+            else:
+                print('ERROR:', f'Time limit exceed: {after_children_real - before_children_real} > {real_time_limit} secs')
 
     children = find_children()
     if len(children) > 0:
@@ -433,8 +445,10 @@ def parse_inf_file(f):
             parse_env(val, res[key])
         elif key == 'comment':
             pass
-        elif key == 'time_limit_ms' or key == 'real_time_limit_ms':
+        elif key == 'time_limit_ms' or key == 'user_time_limit_ms':
             res['time_limit'] = int(val) / 1000
+        elif key == 'real_time_limit_ms':
+            res['real_time_limit'] = int(val) / 1000
         elif key == 'exit_code':
             if key in res:
                 raise RuntimeError("Duplicated params")
@@ -533,7 +547,7 @@ parser.add_argument('--retests-count', default=1, type=int)
 parser.add_argument('--retries-count', default=1, type=int)
 args = parser.parse_args()
 
-is_pipeline = bool(os.environ.get('GITLAB_CI', None))
+is_pipeline = bool(os.environ.get('CI', None))
 
 if is_pipeline:
     args.may_fail_local = []
@@ -578,7 +592,7 @@ for cnt in range(args.retests_count):
             except RuntimeError as e:
                 will_retry = i + 1 < args.retries_count
                 will_retry_str = " not" * (not will_retry)
-                print(f"Attempt {i} failed with {e},{will_retry_str} going to retry")
+                print(f"Attempt {i} failed on test {test} with {e},{will_retry_str} going to retry")
                 if not will_retry:
                     raise
 
