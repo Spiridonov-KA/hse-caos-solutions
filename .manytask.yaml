@@ -195,14 +195,17 @@ deadlines:
       tasks:
         - task: implication
           score: 100
-        - task: thread-local-alloc
-          score: 100
         - task: computation
+          score: 100
+        - task: thread-local-alloc
           score: 100
         - task: limbo
           score: 100
         - task: rw-lock
           score: 100
+        - task: rw-lock-starvation
+          score: 100
+          url: https://gitlab.com/oleg-shatov/hse-caos-public/-/tree/main/tasks/10-thr/rw-lock
 
     - group: bonus
       start: 2025-10-25 19:00
@@ -222,10 +225,6 @@ deadlines:
         - task: interval
           is_bonus: true
           score: 100
-        - task: rw-lock-starvation
-          is_bonus: true
-          score: 100
-          url: https://gitlab.com/oleg-shatov/hse-caos-public/-/tree/main/tasks/10-thr/rw-lock
 
 grades:
   grades:
