@@ -106,7 +106,7 @@ TEST_CASE("DoNotBurnCPU") {
     auto times = timer.GetTimes();
     t.join();
 
-    REQUIRE(times.TotalCpuTime() < 1ms);
+    REQUIRE(times.cpu_time < 1ms);
 }
 
 TEST_CASE("ValuesMatch") {

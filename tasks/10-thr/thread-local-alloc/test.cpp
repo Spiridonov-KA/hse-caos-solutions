@@ -135,8 +135,7 @@ TEST_CASE("AllocatorPerformance") {
         },
         1, 5);
 
-    REQUIRE(alloc_performance.TotalCpuTime() <
-            increment_performance.TotalCpuTime() * 4);
+    REQUIRE(alloc_performance.cpu_time < increment_performance.cpu_time * 4);
 
     OnThreadStop();
 }

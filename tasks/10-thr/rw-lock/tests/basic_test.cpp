@@ -284,7 +284,7 @@ TEST_CASE("DoNotBurnCPU") {
                 waiter.join();
                 INFO("Lock was blocked by " << kind1 << "er, lock attempted by "
                                             << kind2 << "er");
-                REQUIRE(times.TotalCpuTime() < 3ms);
+                REQUIRE(times.cpu_time < 3ms);
             }
         }
     }

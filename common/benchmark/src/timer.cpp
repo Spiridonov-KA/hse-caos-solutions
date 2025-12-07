@@ -4,29 +4,29 @@
 
 #include <cstring>
 #include <iostream>
-#include <sys/resource.h>
+#include <time.h>
 
 namespace {
 
-int ToRusageType(CPUTimer::Type type) {
+int ToClockType(CPUTimer::Type type) {
     switch (type) {
     case CPUTimer::Thread:
-        return RUSAGE_THREAD;
+        return CLOCK_THREAD_CPUTIME_ID;
     case CPUTimer::Process:
-        return RUSAGE_SELF;
+        return CLOCK_PROCESS_CPUTIME_ID;
     default:
         std::terminate();
     }
 }
 
-std::chrono::microseconds ToDuration(timeval d) {
-    return std::chrono::microseconds{1'000'000ll * d.tv_sec + d.tv_usec};
+std::chrono::nanoseconds ToDuration(timespec d) {
+    return std::chrono::nanoseconds{1'000'000'000ll * d.tv_sec + d.tv_nsec};
 }
 
 CPUTimer::Times GetTimes(CPUTimer::Type type) {
-    rusage usage;
+    timespec usage;
     DoNotReorder();
-    if (::getrusage(ToRusageType(type), &usage) < 0) {
+    if (::clock_gettime(ToClockType(type), &usage) < 0) {
         int err = errno;
         std::cerr << "Failed to get resource usage: " << strerror(err)
                   << std::endl;
@@ -35,8 +35,7 @@ CPUTimer::Times GetTimes(CPUTimer::Type type) {
     DoNotReorder();
     return CPUTimer::Times{
         .wall_time = CPUTimer::WallClock::now().time_since_epoch(),
-        .cpu_utime = ToDuration(usage.ru_utime),
-        .cpu_stime = ToDuration(usage.ru_stime),
+        .cpu_time = ToDuration(usage),
     };
 }
 

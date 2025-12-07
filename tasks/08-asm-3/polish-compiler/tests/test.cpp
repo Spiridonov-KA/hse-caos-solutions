@@ -297,8 +297,8 @@ TEST_CASE("Performance") {
             return RunPolishExpr(program, a, b);
         });
 
-    auto ratio = double(interpreted.TotalCpuTime().count()) /
-                 double(compiled.TotalCpuTime().count());
+    auto ratio = double(interpreted.cpu_time.count()) /
+                 double(compiled.cpu_time.count());
 
     WARN("Compiled version is " << std::fixed << std::setprecision(3) << ratio
                                 << " faster than the interpreted one");

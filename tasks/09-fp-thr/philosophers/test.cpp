@@ -72,7 +72,7 @@ TEST_CASE("DoNotBurnCPU") {
             t.StopEating(j);
 
             auto times = timer.GetTimes();
-            REQUIRE(times.TotalCpuTime() < 1ms);
+            REQUIRE(times.cpu_time < 1ms);
         }
     }
 
@@ -99,4 +99,26 @@ TEST_CASE("ProtectsData") {
     }
 
     std::move(r).Join();
+}
+
+TEST_CASE("AllSizes") {
+    constexpr size_t kUpTo = 5;
+
+    for (size_t i = 2; i < kUpTo; ++i) {
+        Table t{i};
+        ThreadRunner r;
+
+        for (size_t j = 0; j < i; ++j) {
+            r.Run(
+                [&t, j](auto) {
+                    std::this_thread::yield();
+                    t.StartEating(j);
+                    std::this_thread::yield();
+                    t.StopEating(j);
+                },
+                100ms);
+        }
+
+        std::move(r).Join();
+    }
 }

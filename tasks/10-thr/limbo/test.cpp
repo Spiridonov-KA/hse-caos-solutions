@@ -105,7 +105,7 @@ TEST_CASE("DoNotBurnCPU") {
     t.join();
 
     REQUIRE(times.wall_time >= 100ms);
-    REQUIRE(times.TotalCpuTime() < 2ms);
+    REQUIRE(times.cpu_time < 2ms);
 }
 
 TEST_CASE("NoExtraWakeups") {
@@ -155,5 +155,5 @@ TEST_CASE("NoExtraWakeups") {
         total += x;
     }
 
-    REQUIRE(total.TotalCpuTime() < 20ms);
+    REQUIRE(total.cpu_time < 20ms);
 }

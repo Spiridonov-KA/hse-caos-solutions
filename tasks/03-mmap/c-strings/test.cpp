@@ -19,9 +19,12 @@ TEST_CASE("NonAlloc") {
 
         std::string text(1 << 17, 'b');
         auto c_text = text.c_str();
-        auto times =
-            RunWithWarmup([c_text] { return StrNLen(c_text, 10); }, 1, 20000);
-        CHECK(times.TotalCpuTime() < 100ms);
+        auto times = RunWithWarmup(
+            [c_text] {
+                return StrNLen(c_text, 10);
+            },
+            1, 20000);
+        CHECK(times.cpu_time < 100ms);
     }
 
     SECTION("StrCmp") {
@@ -109,7 +112,9 @@ TEST_CASE("StrDup") {
 #define CHECK_STR(s)                                                           \
     do {                                                                       \
         auto s2 = StrDup(s);                                                   \
-        Defer cleanup([s2] { Deallocate(s2); });                               \
+        Defer cleanup([s2] {                                                   \
+            Deallocate(s2);                                                    \
+        });                                                                    \
         CHECK(StrCmp(s2, s) == 0);                                             \
     } while (false)
 
@@ -125,7 +130,9 @@ TEST_CASE("StrDup") {
     do {                                                                       \
         auto ln = static_cast<size_t>(n);                                      \
         auto s2 = StrNDup(s, ln);                                              \
-        Defer cleanup([s2] { Deallocate(s2); });                               \
+        Defer cleanup([s2] {                                                   \
+            Deallocate(s2);                                                    \
+        });                                                                    \
         CHECK(StrLen(s2) == std::min(StrLen(s), ln));                          \
         CHECK(StrNCmp(s2, s, ln) == 0);                                        \
     } while (false)
@@ -159,7 +166,7 @@ TEST_CASE("StrDup") {
             }
             return c_text;
         });
-        CHECK(times.TotalCpuTime() < 1s);
+        CHECK(times.cpu_time < 1s);
     }
 }
 
@@ -167,7 +174,9 @@ TEST_CASE("AStrCat") {
 #define CHECK_STRS(s1, s2)                                                     \
     do {                                                                       \
         auto concat = AStrCat(s1, s2);                                         \
-        Defer cleanup([concat] { Deallocate(concat); });                       \
+        Defer cleanup([concat] {                                               \
+            Deallocate(concat);                                                \
+        });                                                                    \
         auto correct = std::string{s1} + std::string{s2};                      \
         CHECK(StrCmp(concat, correct.c_str()) == 0);                           \
     } while (false)

@@ -162,5 +162,5 @@ TEST_CASE("Performance") {
     }
 
     auto times = timer.GetTimes();
-    REQUIRE(times.TotalCpuTime() < 400ms);
+    REQUIRE(times.cpu_time < 400ms);
 }
