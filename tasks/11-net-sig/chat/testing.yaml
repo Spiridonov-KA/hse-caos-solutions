@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, ignore, --interactor, test_utils/interactor.py, --run-cmd, build:solution_chat]
+    profiles:
+      - release
+      - asan
+  - type: report-score
+    task: chat
+editable:
+  - solution.cpp

@@ -1,0 +1,87 @@
+# Existing fds: 3 std streams, 2 listening sockets, maybe epoll, max 4 client sockets (total 9-10)
+# allow 2 spare fds
+
+0 type tcp
+1 type tcp
+2 type unix
+3 type unix
+0 conn
+1 conn
+2 conn
+3 conn
+# wait until server accepts connections
+0 sleep 0.05
+1 sleep 0.05
+2 sleep 0.05
+3 sleep 0.05
+============
+0 send msg1
+1 recv msg1
+2 recv msg1
+3 recv msg1
+
+# close some readers
+2 rstop
+3 rstop
+============
+# send from same fd as previous msg (shouldn't be closed)
+0 send msg2
+1 recv msg2
+# write to clients #2 and #3 should fail, server must close their sockets
+1 sleep 0.05
+============
+# new clients
+4 type unix
+5 type unix
+4 conn
+5 conn
+4 sleep 0.05
+5 sleep 0.05
+============
+# check that clients are ok
+0 send msg3
+1 recv msg3
+4 recv msg3
+5 recv msg3
+
+# Repeat rstop/send-recv-close/connect/send-recv.
+# If no fds are closed, server will have 11 fds,
+# and one of the new clients will fail
+4 rstop
+5 rstop
+============
+0 send msg4
+1 recv msg4
+1 sleep 0.05
+============
+6 type unix
+7 type unix
+6 conn
+7 conn
+6 sleep 0.05
+7 sleep 0.05
+============
+0 send msg5
+1 recv msg5
+6 recv msg5
+7 recv msg5
+
+# repeat once more, just in case (not all fds are closed?)
+6 rstop
+7 rstop
+============
+0 send msg6
+1 recv msg6
+1 sleep 0.05
+============
+8 type unix
+9 type unix
+8 conn
+9 conn
+8 sleep 0.05
+9 sleep 0.05
+============
+0 send msg7
+1 recv msg7
+8 recv msg7
+9 recv msg7

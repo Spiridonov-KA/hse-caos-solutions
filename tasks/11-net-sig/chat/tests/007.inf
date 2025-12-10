@@ -1,0 +1,4 @@
+params = 34567 sock
+time_limit_ms = 200
+real_time_limit_ms = 1500
+comment = "busy wait"

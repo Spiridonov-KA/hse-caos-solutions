@@ -1,0 +1,4 @@
+params = 34567 sock
+environ = UNIX_LISTEN_FAIL=1
+exit_code = 1
+comment = "UNIX listen error"

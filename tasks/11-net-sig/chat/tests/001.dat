@@ -1,0 +1,12 @@
+0 type tcp
+1 type unix
+0 conn
+1 conn
+# wait until server accepts connections
+0 sleep 0.05
+1 sleep 0.05
+============
+0 send hello
+1 recv hello
+1 send hi there
+0 recv hi there

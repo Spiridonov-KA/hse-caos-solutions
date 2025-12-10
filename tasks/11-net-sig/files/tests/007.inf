@@ -1,0 +1,2 @@
+params = file1 file2
+comment = "switch between 2 empty files"

@@ -1,0 +1,13 @@
+tests:
+  - type: run-cmd
+    cmd: [
+      python3, tool:nej-runner, --interactor, build(rel):interactor_files,
+      --initializer, build(rel):initializer_files, --run-cmd, build:solution_files
+    ]
+    profiles:
+      - tsan
+      - release
+  - type: report-score
+    task: files
+editable:
+  - solution.cpp

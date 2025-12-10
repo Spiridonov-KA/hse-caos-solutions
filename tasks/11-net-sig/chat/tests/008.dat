@@ -1,0 +1,42 @@
+0 type tcp
+1 type tcp
+2 type unix
+0 conn
+1 conn
+2 conn
+# wait until server accepts connections
+0 sleep 0.05
+1 sleep 0.05
+2 sleep 0.05
+============
+0 send msg1
+1 recv msg1
+2 recv msg1
+
+# send EOF
+0 stop
+# wait until server closes the connection
+0 sleep 0.05
+============
+
+# new connection
+3 type unix
+3 conn
+3 sleep 0.05
+============
+1 send msg2
+2 recv msg2
+3 recv msg2
+
+1 stop
+1 sleep 0.05
+============
+
+# repeat for TCP
+4 type tcp
+4 conn
+4 sleep 0.05
+============
+2 send msg3
+3 recv msg3
+4 recv msg3

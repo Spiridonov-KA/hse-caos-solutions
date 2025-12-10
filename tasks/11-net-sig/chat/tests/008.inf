@@ -1,0 +1,2 @@
+params = 34567 sock
+comment = "Disconnected client (EOF), new client"

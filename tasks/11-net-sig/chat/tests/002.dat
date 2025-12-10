@@ -1,0 +1,109 @@
+0 type tcp
+1 type tcp
+2 type tcp
+3 type tcp
+4 type tcp
+5 type unix
+6 type unix
+7 type unix
+8 type unix
+9 type unix
+0 conn
+1 conn
+2 conn
+3 conn
+4 conn
+5 conn
+6 conn
+7 conn
+8 conn
+9 conn
+0 sleep 0.05
+1 sleep 0.05
+2 sleep 0.05
+3 sleep 0.05
+4 sleep 0.05
+5 sleep 0.05
+6 sleep 0.05
+7 sleep 0.05
+8 sleep 0.05
+9 sleep 0.05
+===========================================================
+# TCP -> TCP, TCP -> UNIX
+0 send hello
+
+1 recv hello
+2 recv hello
+3 recv hello
+4 recv hello
+5 recv hello
+6 recv hello
+7 recv hello
+8 recv hello
+9 recv hello
+# don't send next msg
+# until all clients have received the previous one
+===========================================================
+# UNIX -> TCP, UNIX -> UNIX
+5 send hello2
+
+0 recv hello2
+1 recv hello2
+2 recv hello2
+3 recv hello2
+4 recv hello2
+6 recv hello2
+7 recv hello2
+8 recv hello2
+9 recv hello2
+===========================================================
+# another UNIX client.
+6 send hello3
+
+0 recv hello3
+1 recv hello3
+2 recv hello3
+3 recv hello3
+4 recv hello3
+5 recv hello3
+7 recv hello3
+8 recv hello3
+9 recv hello3
+===========================================================
+# Go back to TCP, another client
+1 send hello4
+
+0 recv hello4
+2 recv hello4
+3 recv hello4
+4 recv hello4
+5 recv hello4
+6 recv hello4
+7 recv hello4
+8 recv hello4
+9 recv hello4
+===========================================================
+# Same cliemt, multiple messages.
+# (can this break bad solutions with EPOLLET?)
+1 send hello5
+1 send hello6
+
+0 recv hello5
+2 recv hello5
+3 recv hello5
+4 recv hello5
+5 recv hello5
+6 recv hello5
+7 recv hello5
+8 recv hello5
+9 recv hello5
+
+0 recv hello6
+2 recv hello6
+3 recv hello6
+4 recv hello6
+5 recv hello6
+6 recv hello6
+7 recv hello6
+8 recv hello6
+9 recv hello6

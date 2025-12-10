@@ -1,0 +1,13 @@
+tests:
+  - type: run-cmd
+    cmd: [
+      python3, tool:nej-runner, --output-file, output, --run-cmd,
+      build(rel):run_interactor_ignore build(rel):interactor_ignore input.txt output any ; build:solution_ignore,
+    ]
+    profiles:
+      # - tsan
+      - release
+  - type: report-score
+    task: ignore
+editable:
+  - cat.cpp

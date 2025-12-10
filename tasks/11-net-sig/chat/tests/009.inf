@@ -1,0 +1,4 @@
+params = 34567 sock
+max_open_file_count = 12
+real_time_limit_ms = 1500
+comment = "Disconnected client (EPIPE), fd leaks"

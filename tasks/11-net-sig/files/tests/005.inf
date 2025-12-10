@@ -1,0 +1,4 @@
+params = file1
+interactor_env = LATE_SIGTERM=1
+time_limit_ms = 100
+comment = "Empty file, check busy wait"

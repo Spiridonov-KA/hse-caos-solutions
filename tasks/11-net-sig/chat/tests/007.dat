@@ -1,0 +1,6 @@
+0 type tcp
+1 type unix
+0 conn
+1 conn
+0 sleep 0.5
+1 sleep 0.5

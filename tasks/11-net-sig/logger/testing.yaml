@@ -1,0 +1,10 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --interactor, './interactor.py', --run-cmd, build:solution_logger]
+    profiles:
+      - release
+      - tsan
+  - type: report-score
+    task: logger
+editable:
+  - logger.cpp

@@ -1,0 +1,3 @@
+params = file1
+environ = DELAY_SIGSUSPEND=1
+comment = "sigsuspend/pause races"
