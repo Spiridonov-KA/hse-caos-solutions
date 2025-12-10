@@ -1,0 +1,11 @@
+tests:
+  - type: run-cmd
+    cmd: [python3, tool:nej-runner, --checker, cmp, --run-cmd, build:harness_backtrace_2]
+    profiles: [debug]
+  - type: forbidden-patterns
+    token:
+      backtrace
+  - type: report-score
+    task: backtrace-2
+editable:
+  - src/*
