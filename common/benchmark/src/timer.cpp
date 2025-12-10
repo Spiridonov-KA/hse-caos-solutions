@@ -20,7 +20,7 @@ int ToClockType(CPUTimer::Type type) {
 }
 
 std::chrono::nanoseconds ToDuration(timespec d) {
-    return std::chrono::nanoseconds{1'000'000'000ll * d.tv_sec + d.tv_nsec};
+    return std::chrono::seconds{d.tv_sec} + std::chrono::nanoseconds{d.tv_nsec};
 }
 
 CPUTimer::Times GetTimes(CPUTimer::Type type) {

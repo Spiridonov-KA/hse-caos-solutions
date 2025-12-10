@@ -1,7 +1,7 @@
 tests:
   - type: run-cmd
     cmd: [build:test_philosophers]
-    profiles: [tsan, release]
+    profiles: [asan, tsan, release]
     extra_env:
       # False-positive lock-order-inversion warnings
       TSAN_OPTIONS: "detect_deadlocks=0"

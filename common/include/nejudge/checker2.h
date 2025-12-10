@@ -54,7 +54,10 @@ const char* _(const char* s) {
     return s;
 }
 
-void checker_do_init(int argc, char** argv, int, int, int) {
+void checker_do_init(int argc, char** argv, int a, int b, int c) {
+    (void)a;
+    (void)b;
+    (void)c;
     if (argc < 3) {
         fatal_CF(_("arguments expected '%d'"), argc);
     }

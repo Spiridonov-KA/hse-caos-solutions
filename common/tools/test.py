@@ -312,7 +312,7 @@ def run_solution(input_file: Path, correct_file: Path, inf_file: Path, cmd: str,
             p.stdin.close()
             p.wait()
             i.wait()
-            if i.returncode != 0:
+            if not check_exit_code(p.returncode, meta.get('exit_code', '0')):
                 if str(test) not in may_fail_local:
                     if os.path.isfile('output'):
                         with open('output', 'rb') as f:

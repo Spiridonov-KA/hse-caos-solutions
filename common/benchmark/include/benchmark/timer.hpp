@@ -44,7 +44,7 @@ class CPUTimer {
 
     explicit CPUTimer(Type type = Type::Process);
 
-    Times GetTimes() const;
+    [[nodiscard]] Times GetTimes() const;
 
   private:
     const Type type_;

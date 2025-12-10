@@ -220,22 +220,30 @@ impl TestContext {
         let process_cmd_arg = {
             let processors = self.cmd_arg_processors();
 
-            let f: impl for<'a> Fn(&'a str) -> Result<Cow<'a, OsStr>> = move |arg: &str| {
-                let pos = if let Some(pos) = arg.find(':') {
-                    pos
-                } else {
-                    return Ok(Cow::from(OsStr::new(arg)));
-                };
+            move |arg: &str| -> Result<Cow<'_, OsStr>> {
+                let mut out = OsString::new();
+                let mut first = true;
 
-                let processor = &arg[..pos];
-                let arg = &arg[pos + 1..];
+                for token in arg.split_whitespace() {
+                    if !first {
+                        out.push(" ");
+                    }
+                    first = false;
 
-                let processor = processors
-                    .get(processor)
-                    .with_context(|| format!("processor \"{}\" not found", processor))?;
-                processor(self, profile, arg).map(Cow::from)
-            };
-            f
+                    if let Some(pos) = token.find(':') {
+                        let processor = &token[..pos];
+                        let arg_tail = &token[pos + 1..];
+                        let processor_fn = processors
+                            .get(processor)
+                            .with_context(|| format!("processor \"{}\" not found", processor))?;
+                        out.push(processor_fn(self, profile, arg_tail)?);
+                    } else {
+                        out.push(token);
+                    };
+                }
+
+                Ok(Cow::Owned(out))
+            }
         };
 
         let args = cfg

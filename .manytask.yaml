@@ -225,6 +225,9 @@ deadlines:
         - task: interval
           is_bonus: true
           score: 100
+        # - task: backtrace-2
+        #   is_bonus: true
+        #   score: 150
 
 grades:
   grades:

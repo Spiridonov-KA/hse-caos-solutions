@@ -68,6 +68,7 @@ TEST_CASE("DoNotBurnCPU") {
             std::this_thread::sleep_for(1ms);
 
             CPUTimer timer{CPUTimer::Thread};
+
             t.StartEating(j);
             t.StopEating(j);
 
@@ -104,7 +105,7 @@ TEST_CASE("ProtectsData") {
 TEST_CASE("AllSizes") {
     constexpr size_t kUpTo = 5;
 
-    for (size_t i = 2; i < kUpTo; ++i) {
+    for (size_t i = 2; i <= kUpTo; ++i) {
         Table t{i};
         ThreadRunner r;
 
@@ -116,7 +117,7 @@ TEST_CASE("AllSizes") {
                     std::this_thread::yield();
                     t.StopEating(j);
                 },
-                100ms);
+                50ms);
         }
 
         std::move(r).Join();
