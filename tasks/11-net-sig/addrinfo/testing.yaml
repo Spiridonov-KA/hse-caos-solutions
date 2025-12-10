@@ -3,5 +3,7 @@ tests:
     cmd: [python3, tool:nej-runner, --checker, local:checker.py, --retries-count, "3", --run-cmd, build:solution_addrinfo]
     profiles:
       - release
+  - type: report-score
+    task: addrinfo
 editable:
   - solution.cpp
