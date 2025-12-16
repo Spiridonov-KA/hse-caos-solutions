@@ -32,7 +32,11 @@ def main():
 
     _, _, inp, ouf, _, _ = sys.argv
     with open(inp, 'r') as inp, open(ouf, 'r') as out:
-        for i, (req, resp) in enumerate(zip(inp, out)):
+        inp_lines = inp.read().strip().split('\n')
+        out_lines = out.read().strip().split('\n')
+        if len(inp_lines) != len(out_lines):
+            raise RuntimeError(f"Wrong number of lines in the output: {len(inp_lines)} expected, found: {len(out_lines)}")
+        for i, (req, resp) in enumerate(zip(inp_lines, out_lines)):
             resp = resp.strip()
             correct_resp = resolve(*req.split())
             if correct_resp != resp:
