@@ -189,8 +189,8 @@ deadlines:
       start: 2025-12-04 09:00
       steps:
         1.0: 2025-12-17 21:00
-        0.5: 2025-12-19 23:59
-      end: 2025-12-19 23:59
+        0.5: 2025-12-23 21:00
+      end: 2025-12-23 21:01
       enabled: true
       tasks:
         - task: implication
@@ -211,7 +211,8 @@ deadlines:
       start: 2025-12-10 09:00
       steps:
         1.0: 2025-12-19 23:59
-      end: 2025-12-19 23:59
+        0.5: 2025-12-24 21:00
+      end: 2025-12-24 21:01
       enabled: true
       tasks:
         - task: addrinfo
