@@ -114,7 +114,7 @@ TEST_CASE("NoExtraWakeups") {
     }
 
     constexpr size_t kThreads = 100;
-    constexpr int kIterations = 50'000;
+    constexpr int kIterations = 80'000;
     constexpr int kWaitStart = 2'000'000;
     Limbo l;
     std::vector<std::jthread> waiters(kThreads);
@@ -136,10 +136,12 @@ TEST_CASE("NoExtraWakeups") {
         }
     });
 
+    CPUTimer timer;
     for (int i = 0; i < kIterations; ++i) {
         l.Raise(i);
         std::this_thread::sleep_for(500ns);
     }
+    auto raise_times = timer.GetTimes();
 
     CHECK(finished.load() == 0);
 
@@ -156,4 +158,5 @@ TEST_CASE("NoExtraWakeups") {
     }
 
     REQUIRE(total.cpu_time < 20ms);
+    REQUIRE(raise_times.cpu_time < 4s);
 }
