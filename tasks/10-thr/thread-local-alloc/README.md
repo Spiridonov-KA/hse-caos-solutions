@@ -26,3 +26,47 @@
 
 Не допускайте лишней коммуникации между потоками (в том числе неявной). Возможно, для
 прохождения тестов вам понадобится прочитать их код ;)
+
+Обратите внимание на то, что вы [можете](./testing.yaml#L13) менять в том числе заголовочный
+файл.
+
+## Локализация проблем с производительностью
+
+Часто для локализации проблем с производительностью используется утилита [`perf`](https://www.man7.org/linux/man-pages/man1/perf.1.html).
+
+У нее довольно обширный функционал, одна из ее возможностей – получение статистик об
+исполнении программы от процессора. Для получения этих статистик используется
+[`perf stat`](https://www.man7.org/linux/man-pages/man1/perf-stat.1.html):
+
+```bash
+sudo perf stat -ddd -- ../../../build_release/test_thread_local_alloc CheckContention
+```
+
+Часть проблем удается локализовать путем анализа статистик (например, если счетчик `branch-misses`
+имеет такой же порядок значeний, как и `branches` – скорее всего, в коде проблема с branch
+misprediction).
+
+Далее можно выполнить _сэмплирование_ приложения – время от времени собирать сэмпл в виде стектрейса
+и по нему понимать, в каких местах приложение проводит много времени.
+
+```bash
+sudo perf record -F 1000 -g -- ../../../build_release/test_thread_local_alloc CheckContention
+```
+
+Эта команда соберет сэмплы приложения в файл `perf.data`. Просмотреть его можно с помощью, например
+[`perf report`](https://www.man7.org/linux/man-pages/man1/perf-report.1.html):
+
+```bash
+sudo perf report
+```
+
+Она откроет TUI с самыми "горячими" функциями, далее можно выбрать какую-нибудь
+из них, выбрать "Annotate \<function\>" и посмотреть на инструкции, которые
+выполняются дольше всего.
+
+Альтернативный способ просмотра сэмплов – [flamegraph](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html).
+
+## Полезные ссылки
+
+- [perf examples](https://www.brendangregg.com/perf.html)
+- [A Top-Down Method for Performance Analysis and Counters Architecture](https://rcs.uwaterloo.ca/~ali/cs854-f23/papers/topdown.pdf)

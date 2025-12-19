@@ -79,5 +79,41 @@ TEST_CASE("Performance") {
 
     WARN("Parallel version is " << std::fixed << std::setprecision(3) << ratio
                                 << " times faster than the ordinary one");
-    CHECK(ratio > 3);
+    CHECK(ratio > 3.3);
+}
+
+TEST_CASE("ZeroesPerformance") {
+    if constexpr (kBuildType != BuildType::Release) {
+        return;
+    }
+
+    PCGRandom rng{Catch::getSeed()};
+    constexpr size_t length = 100'000'000;
+    std::vector<bool> input(length, false);
+    for (size_t i = 0; i < 10'000; ++i) {
+        input[i] = rng() % 2;
+    }
+
+    auto seq = RunWithWarmup(
+        [&] {
+            return SequentialImplication(input);
+        },
+        2, 5);
+
+    auto par = RunWithWarmup(
+        [&] {
+            return Implication(input);
+        },
+        2, 5);
+
+    auto ratio = double(seq.wall_time.count()) / double(par.wall_time.count());
+
+    WARN("Parallel version is " << std::fixed << std::setprecision(3) << ratio
+                                << " times faster than the ordinary one");
+#ifdef __clang__
+    constexpr double kSpeedup = 1.1;
+#else
+    constexpr double kSpeedup = 1.4;
+#endif
+    CHECK(ratio > kSpeedup);
 }
