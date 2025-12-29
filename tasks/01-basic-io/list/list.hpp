@@ -1,8 +1,7 @@
 #pragma once
 
+#include <cassert>
 #include <utility>
-
-#include <unused.hpp>  // TODO: remove before flight.
 
 class List {
   public:
@@ -28,42 +27,75 @@ class List {
     }
 
     void PushBack(int value) {
-        UNUSED(value);  // TODO: remove before flight.
+        if (tail == nullptr) {
+            CreateFirstNode(value);
+            return;
+        }
+        auto newTail = new Node{value, tail, nullptr};
+        tail->setRightPtr(newTail);
+        tail = newTail;
     }
 
     void PushFront(int value) {
-        UNUSED(value);  // TODO: remove before flight.
+        if (tail == nullptr) {
+            CreateFirstNode(value);
+            return;
+        }
+        auto newHead = new Node{value, nullptr, head};
+        head->setLeftPtr(newHead);
+        head = newHead;
     }
 
     void PopBack() {
-        // TODO: your code here.
+        auto newTail = tail->getLeftPtr();
+        if (newTail != nullptr) {
+            newTail->setRightPtr(nullptr);
+        } else {
+            head = nullptr;
+        }
+        delete tail;
+        tail = newTail;
     }
 
     void PopFront() {
-        // TODO: your code here.
+        auto newHead = head->getRightPtr();
+        if (newHead != nullptr) {
+            newHead->setLeftPtr(nullptr);
+        } else {
+            tail = nullptr;
+        }
+        delete head;
+        head = newHead;
     }
 
     int& Back() {
-        // TODO: your code here.
-        throw "TODO";
+        return tail->getValue();
     }
 
     int& Front() {
-        // TODO: your code here.
-        throw "TODO";
+        return head->getValue();
     }
 
     bool IsEmpty() const {
-        // TODO: your code here.
-        throw "TODO";
+        return head == nullptr;
     }
 
     void Swap(List& other) {
-        UNUSED(other);  // TODO: remove before flight.
+        std::swap(head, other.head);
+        std::swap(tail, other.tail);
     }
 
     void Clear() {
-        // TODO: your code here.
+        if (IsEmpty()) {
+            return;
+        }
+        auto curNode = head;
+        auto nextNode = curNode->getRightPtr();
+        while (curNode != nullptr) {
+            nextNode = curNode->getRightPtr();
+            delete curNode;
+            curNode = nextNode;
+        }
     }
 
     // https://en.cppreference.com/w/cpp/container/list/splice
@@ -72,14 +104,79 @@ class List {
     // l1.Splice({4, 5, 6});
     // l1 == {1, 2, 3, 4, 5, 6};
     void Splice(List& other) {
-        UNUSED(other);  // TODO: remove before flight.
+        if (other.IsEmpty()) {
+            return;
+        }
+        if (IsEmpty()) {
+            head = other.head;
+            tail = other.tail;
+        } else {
+            tail->setRightPtr(other.head);
+            other.head->setLeftPtr(tail);
+            tail = other.tail;
+        }
+        other.head = nullptr;
+        other.tail = nullptr;
     }
 
     template <class F>
     void ForEachElement(F&& f) const {
-        UNUSED(f);  // TODO: remove before flight.
+        if (IsEmpty()) {
+            return;
+        }
+        auto curNode = head;
+        auto nextNode = curNode->getRightPtr();
+        while (curNode != nullptr) {
+            nextNode = curNode->getRightPtr();
+            f(curNode->getValue());
+            curNode = nextNode;
+        }
     }
 
   private:
-    // TODO: your code here.
+    class Node {
+        Node* left = nullptr;
+        Node* right = nullptr;  // use unique_ptr
+        int value;
+
+      public:
+        Node(int value) : value{value} {
+        }
+
+        Node(int value, Node* left, Node* right)
+            : left{left}, right{right}, value{value} {
+        }
+
+        void setLeftPtr(Node* ptr) {
+            left = ptr;
+        }
+
+        void setRightPtr(Node* ptr) {
+            right = ptr;
+        }
+
+        void setValue(int newValue) {
+            value = newValue;
+        }
+
+        Node* getLeftPtr() {
+            return left;
+        }
+
+        Node* getRightPtr() {
+            return right;
+        }
+
+        int& getValue() {
+            return value;
+        }
+    };
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+
+    void CreateFirstNode(int value) {
+        assert(head == nullptr && tail == nullptr);
+        head = tail = new Node{value};
+    }
 };
